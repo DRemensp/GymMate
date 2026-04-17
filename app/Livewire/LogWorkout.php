@@ -15,6 +15,35 @@ class LogWorkout extends Component
         ['weight' => '', 'reps' => ''],
     ];
 
+    public ?array $lastSets      = null;
+    public ?string $progressionTip = null;
+
+    public function mount(Exercise $exercise): void
+    {
+        $this->exercise = $exercise;
+
+        $lastSession = $exercise->workoutSessions()->with('sets')->first();
+
+        if ($lastSession && $lastSession->sets->isNotEmpty()) {
+            $targetReps = Auth::user()->target_reps ?? 8;
+
+            $this->lastSets = $lastSession->sets
+                ->map(fn($s) => ['weight' => $s->weight, 'reps' => $s->reps])
+                ->toArray();
+
+            $allReached = $lastSession->sets->every(fn($s) => $s->reps >= $targetReps);
+            $this->progressionTip = $allReached ? 'increase' : 'hold';
+
+            $this->sets = $lastSession->sets->map(function ($set) use ($allReached) {
+                $recommended = $allReached
+                    ? round($set->weight * 1.05 * 2) / 2
+                    : $set->weight;
+
+                return ['weight' => $recommended, 'reps' => $set->reps];
+            })->toArray();
+        }
+    }
+
     public function addSet(): void
     {
         $this->sets[] = ['weight' => '', 'reps' => ''];
@@ -32,9 +61,9 @@ class LogWorkout extends Component
         abort_if($this->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
 
         $this->validate([
-            'sets'             => ['required', 'array', 'min:1'],
-            'sets.*.weight'    => ['required', 'numeric', 'min:0', 'max:9999'],
-            'sets.*.reps'      => ['required', 'integer', 'min:1', 'max:9999'],
+            'sets'          => ['required', 'array', 'min:1'],
+            'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
+            'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
         ]);
 
         $session = WorkoutSession::create([
@@ -51,6 +80,8 @@ class LogWorkout extends Component
         }
 
         $this->sets = [['weight' => '', 'reps' => '']];
+        $this->lastSets = null;
+        $this->progressionTip = null;
         $this->dispatch('session-saved');
     }
 

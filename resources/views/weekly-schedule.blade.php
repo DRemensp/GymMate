@@ -4,13 +4,13 @@
         <div class="max-w-xl mx-auto">
 
             <div class="mb-8 sm:pl-14">
-                <h1 class="text-2xl font-bold text-white">Trainingsplan</h1>
+                <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">Trainingsplan</h1>
                 <p class="text-zinc-500 text-sm mt-1">Lege fest was an welchem Wochentag ansteht.</p>
             </div>
 
             <div class="sm:pl-14">
                 @if(session('saved'))
-                <div class="mb-4 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+                <div class="mb-4 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400 text-sm">
                     Gespeichert.
                 </div>
                 @endif
@@ -24,11 +24,10 @@
                     @endphp
 
                     @foreach($days as $dow => $entry)
-                    <div class="bg-zinc-900 border {{ $dow === $today ? 'border-orange-500/50' : 'border-zinc-800' }} rounded-2xl px-4 py-3">
+                    <div class="bg-white dark:bg-zinc-900 border {{ $dow === $today ? 'border-orange-500/50' : 'border-zinc-300 dark:border-zinc-700' }} rounded-2xl px-4 py-3">
 
-                        {{-- Kopfzeile: Tag + Rest-Checkbox --}}
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-semibold {{ $dow === $today ? 'text-orange-400' : 'text-zinc-400' }}">
+                            <span class="text-sm font-semibold {{ $dow === $today ? 'text-orange-400' : 'text-zinc-600 dark:text-zinc-400' }}">
                                 {{ $dayNames[$dow] }}
                                 @if($dow === $today)
                                     <span class="ml-1.5 text-xs text-orange-500/60 font-normal">heute</span>
@@ -37,21 +36,35 @@
                             <label class="flex items-center gap-1.5 cursor-pointer select-none">
                                 <input type="checkbox" name="days[{{ $dow }}][is_rest]" value="1"
                                     {{ $entry->is_rest ? 'checked' : '' }}
-                                    class="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-orange-500 focus:ring-0 focus:ring-offset-0"
-                                    onchange="const inp = this.closest('.bg-zinc-900').querySelector('input[type=text]'); inp.disabled = this.checked; if(this.checked) inp.value = '';">
+                                    class="w-4 h-4 rounded border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-orange-500 focus:ring-0 focus:ring-offset-0"
+                                    onchange="const inp = this.closest('.bg-white, .dark\\:bg-zinc-900').querySelector('input[type=text]'); inp.disabled = this.checked; if(this.checked) inp.value = '';">
                                 <span class="text-zinc-500 text-xs">Rest Day</span>
                             </label>
                         </div>
 
-                        {{-- Input --}}
                         <input type="text"
                             name="days[{{ $dow }}][label]"
                             value="{{ $entry->label }}"
                             placeholder="z.B. Push Pull (Brust / Rücken)"
                             {{ $entry->is_rest ? 'disabled' : '' }}
-                            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"/>
+                            class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-3 py-2 text-zinc-900 dark:text-white text-sm placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"/>
                     </div>
                     @endforeach
+
+                    {{-- Ziel-Reps --}}
+                    <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl shadow-sm px-4 py-3">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Ziel-Reps</p>
+                                <p class="text-zinc-500 text-xs mt-0.5">Angestrebte Wiederholungen pro Set</p>
+                            </div>
+                            <input type="number" inputmode="numeric"
+                                name="target_reps"
+                                value="{{ Auth::user()->target_reps }}"
+                                min="1" max="100"
+                                class="w-16 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-1.5 text-zinc-900 dark:text-white text-sm text-center focus:outline-none focus:border-orange-500 transition-colors"/>
+                        </div>
+                    </div>
 
                     <button type="submit"
                         class="w-full py-2.5 mt-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">

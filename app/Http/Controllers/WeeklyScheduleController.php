@@ -23,9 +23,10 @@ class WeeklyScheduleController extends Controller
     public function update(Request $request)
     {
         $data = $request->validate([
-            'days'          => ['required', 'array'],
-            'days.*.label'  => ['nullable', 'string', 'max:100'],
-            'days.*.is_rest' => ['nullable'],
+            'days'            => ['required', 'array'],
+            'days.*.label'    => ['nullable', 'string', 'max:100'],
+            'days.*.is_rest'  => ['nullable'],
+            'target_reps'     => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
         foreach ($data['days'] as $dayOfWeek => $values) {
@@ -37,6 +38,8 @@ class WeeklyScheduleController extends Controller
                 ]
             );
         }
+
+        Auth::user()->update(['target_reps' => $data['target_reps'] ?? 8]);
 
         return back()->with('saved', true);
     }
