@@ -12,7 +12,9 @@ class Exercise extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
-    protected $fillable = ['training_plan_id', 'name', 'description'];
+    protected $fillable = ['training_plan_id', 'name', 'description', 'is_unilateral'];
+
+    protected $casts = ['is_unilateral' => 'boolean'];
 
     public function trainingPlan(): BelongsTo
     {

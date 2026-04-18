@@ -14,19 +14,22 @@ class CreateExercise extends Component
     public bool $open = false;
     public string $name = '';
     public string $description = '';
+    public bool $is_unilateral = false;
     public $image;
 
     public function save(): void
     {
         $this->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'image'       => ['nullable', 'image', 'max:4096'],
+            'name'         => ['required', 'string', 'max:255'],
+            'description'  => ['nullable', 'string'],
+            'is_unilateral'=> ['boolean'],
+            'image'        => ['nullable', 'image', 'max:4096'],
         ]);
 
         $exercise = $this->trainingPlan->exercises()->create([
-            'name'        => $this->name,
-            'description' => $this->description ?: null,
+            'name'          => $this->name,
+            'description'   => $this->description ?: null,
+            'is_unilateral' => $this->is_unilateral,
         ]);
 
         if ($this->image) {
@@ -35,7 +38,7 @@ class CreateExercise extends Component
                 ->toMediaCollection('image');
         }
 
-        $this->reset('name', 'description', 'image', 'open');
+        $this->reset('name', 'description', 'is_unilateral', 'image', 'open');
         $this->dispatch('exercise-created');
     }
 

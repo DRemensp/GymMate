@@ -21,7 +21,9 @@ return new class extends Migration
             $table->foreignId('workout_session_id')->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('set_number');
             $table->decimal('weight', 6, 2);
-            $table->unsignedInteger('reps');
+            $table->unsignedInteger('reps')->nullable();
+            $table->unsignedInteger('reps_left')->nullable();
+            $table->unsignedInteger('reps_right')->nullable();
             $table->timestamps();
         });
     }

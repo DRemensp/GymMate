@@ -1,30 +1,45 @@
 <x-layouts.sidebar>
 
-    <div class="min-h-screen px-6 pt-8 pb-10">
+    <div class="min-h-screen px-6 pt-8 pb-10" x-data="{ editMode: false }">
         <div class="max-w-6xl mx-auto">
 
-            <div class="mb-8 sm:pl-14 flex items-center gap-3">
-                <a href="{{ route('locations.training-plans.index', $trainingPlan->location) }}"
-                    class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-                    </svg>
-                </a>
-                <div>
-                    <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $trainingPlan->name }}</h1>
-                    <p class="text-zinc-500 text-sm mt-0.5">Übungen</p>
+            <div class="mb-8 sm:pl-14 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('locations.training-plans.index', $trainingPlan->location) }}"
+                        class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+                        </svg>
+                    </a>
+                    <div>
+                        <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $trainingPlan->name }}</h1>
+                        <p class="text-zinc-500 text-sm mt-0.5">Übungen</p>
+                    </div>
                 </div>
+
+                <button @click="editMode = !editMode"
+                    :class="editMode
+                        ? 'bg-orange-500 text-white border-orange-500'
+                        : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-orange-500 hover:text-orange-500'"
+                    class="flex items-center gap-2 px-3.5 py-2 rounded-xl border text-sm font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                    </svg>
+                    <span x-text="editMode ? 'Fertig' : 'Bearbeiten'"></span>
+                </button>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:pl-14"
-                 x-data
-                 @exercise-created.window="window.location.reload()">
+                 @exercise-created.window="window.location.reload()"
+                 @exercise-updated.window="window.location.reload()">
 
                 @foreach($exercises as $exercise)
                     <div x-data="{ open: false, confirmation: '' }"
                          class="group relative rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-orange-500 transition-colors min-h-48">
 
-                        <a href="{{ route('exercises.show', $exercise) }}" class="absolute inset-0">
+                        <a href="{{ route('exercises.show', $exercise) }}" class="absolute inset-0"
+                           :class="editMode ? 'pointer-events-none' : ''">
                             @if($exercise->getFirstMediaUrl('image'))
                                 <img src="{{ $exercise->getFirstMediaUrl('image') }}"
                                     alt="{{ $exercise->name }}"
@@ -44,13 +59,23 @@
                             <p class="text-zinc-300 text-xs mt-1 drop-shadow">{{ $exercise->workoutSessions()->count() }} Einheiten</p>
                         </div>
 
-                        <button @click.prevent="open = true"
-                            class="absolute top-2 right-2 z-10 p-1.5 rounded-lg text-white/50 hover:text-red-400 hover:bg-red-500/20 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                        </button>
+                        {{-- Edit/Delete buttons — nur im Bearbeitungsmodus sichtbar --}}
+                        <div x-show="editMode" x-transition class="absolute top-2 right-2 flex gap-1 z-10">
+                            <button @click.prevent="$dispatch('edit-exercise', { id: {{ $exercise->id }} })"
+                                class="p-1.5 rounded-lg text-white/70 hover:text-orange-400 hover:bg-orange-500/20 bg-black/30 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                                </svg>
+                            </button>
+                            <button @click.prevent="open = true"
+                                class="p-1.5 rounded-lg text-white/70 hover:text-red-400 hover:bg-red-500/20 bg-black/30 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
 
                         <template x-teleport="body">
                             <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -86,6 +111,8 @@
 
                 <livewire:create-exercise :trainingPlan="$trainingPlan" />
             </div>
+
+            <livewire:edit-exercise />
 
         </div>
     </div>

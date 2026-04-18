@@ -12,7 +12,7 @@ class LogWorkout extends Component
     public Exercise $exercise;
 
     public array $sets = [
-        ['weight' => '', 'reps' => ''],
+        ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => ''],
     ];
 
     public ?array $lastSets      = null;
@@ -27,26 +27,29 @@ class LogWorkout extends Component
         if ($lastSession && $lastSession->sets->isNotEmpty()) {
             $targetReps = Auth::user()->target_reps ?? 8;
 
-            $this->lastSets = $lastSession->sets
-                ->map(fn($s) => ['weight' => $s->weight, 'reps' => $s->reps])
-                ->toArray();
+            $this->lastSets = $lastSession->sets->map(fn($s) => [
+                'weight'     => $s->weight,
+                'reps'       => $s->reps,
+                'reps_left'  => $s->reps_left,
+                'reps_right' => $s->reps_right,
+            ])->toArray();
 
-            $allReached = $lastSession->sets->every(fn($s) => $s->reps >= $targetReps);
+            if ($exercise->is_unilateral) {
+                $allReached = $lastSession->sets->every(
+                    fn($s) => $s->reps_left >= $targetReps && $s->reps_right >= $targetReps
+                );
+            } else {
+                $allReached = $lastSession->sets->every(fn($s) => $s->reps >= $targetReps);
+            }
+
             $this->progressionTip = $allReached ? 'increase' : 'hold';
-
-            $this->sets = $lastSession->sets->map(function ($set) use ($allReached) {
-                $recommended = $allReached
-                    ? round($set->weight * 1.05 * 2) / 2
-                    : $set->weight;
-
-                return ['weight' => $recommended, 'reps' => $set->reps];
-            })->toArray();
+            $this->sets = array_fill(0, $lastSession->sets->count(), ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => '']);
         }
     }
 
     public function addSet(): void
     {
-        $this->sets[] = ['weight' => '', 'reps' => ''];
+        $this->sets[] = ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => ''];
     }
 
     public function removeSet(int $index): void
@@ -60,11 +63,20 @@ class LogWorkout extends Component
     {
         abort_if($this->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
 
-        $this->validate([
-            'sets'          => ['required', 'array', 'min:1'],
-            'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
-            'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
-        ]);
+        if ($this->exercise->is_unilateral) {
+            $this->validate([
+                'sets'               => ['required', 'array', 'min:1'],
+                'sets.*.weight'      => ['required', 'numeric', 'min:0', 'max:9999'],
+                'sets.*.reps_left'   => ['required', 'integer', 'min:1', 'max:9999'],
+                'sets.*.reps_right'  => ['required', 'integer', 'min:1', 'max:9999'],
+            ]);
+        } else {
+            $this->validate([
+                'sets'          => ['required', 'array', 'min:1'],
+                'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
+                'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
+            ]);
+        }
 
         $session = WorkoutSession::create([
             'exercise_id' => $this->exercise->id,
@@ -75,11 +87,13 @@ class LogWorkout extends Component
             $session->sets()->create([
                 'set_number' => $i + 1,
                 'weight'     => $set['weight'],
-                'reps'       => $set['reps'],
+                'reps'       => $this->exercise->is_unilateral ? null : $set['reps'],
+                'reps_left'  => $this->exercise->is_unilateral ? $set['reps_left'] : null,
+                'reps_right' => $this->exercise->is_unilateral ? $set['reps_right'] : null,
             ]);
         }
 
-        $this->sets = [['weight' => '', 'reps' => '']];
+        $this->sets = [['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => '']];
         $this->lastSets = null;
         $this->progressionTip = null;
         $this->dispatch('session-saved');

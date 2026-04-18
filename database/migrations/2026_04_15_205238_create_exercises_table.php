@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('training_plan_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->boolean('is_unilateral')->default(false);
             $table->timestamps();
         });
     }
