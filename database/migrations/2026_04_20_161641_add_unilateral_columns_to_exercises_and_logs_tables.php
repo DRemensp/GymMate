@@ -9,13 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('exercises', function (Blueprint $table) {
-            $table->boolean('is_unilateral')->default(false)->after('description');
+            if (!Schema::hasColumn('exercises', 'is_unilateral')) {
+                $table->boolean('is_unilateral')->default(false)->after('description');
+            }
         });
 
         Schema::table('exercise_logs', function (Blueprint $table) {
             $table->unsignedInteger('reps')->nullable()->change();
-            $table->unsignedInteger('reps_left')->nullable()->after('reps');
-            $table->unsignedInteger('reps_right')->nullable()->after('reps_left');
+            if (!Schema::hasColumn('exercise_logs', 'reps_left')) {
+                $table->unsignedInteger('reps_left')->nullable()->after('reps');
+            }
+            if (!Schema::hasColumn('exercise_logs', 'reps_right')) {
+                $table->unsignedInteger('reps_right')->nullable()->after('reps_left');
+            }
         });
     }
 
