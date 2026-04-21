@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Location;
+use App\Models\TrainingPlan;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -42,10 +44,31 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $this->seedDefaultData($user);
+
         event(new Registered($user));
 
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
+    }
+
+    private function seedDefaultData(User $user): void
+    {
+        $plans = ['Arme', 'Beine', 'Chest', 'Back', 'Schulter'];
+
+        foreach (['Stuttgart', 'Bad Cannstatt'] as $locationName) {
+            $location = Location::create([
+                'user_id' => $user->id,
+                'name'    => $locationName,
+            ]);
+
+            foreach ($plans as $plan) {
+                TrainingPlan::create([
+                    'location_id' => $location->id,
+                    'name'        => $plan,
+                ]);
+            }
+        }
     }
 }

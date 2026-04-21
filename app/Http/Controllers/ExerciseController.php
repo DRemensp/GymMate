@@ -12,7 +12,7 @@ class ExerciseController extends Controller
     {
         abort_if($trainingPlan->location->user_id !== Auth::id(), 403);
 
-        $exercises = $trainingPlan->exercises()->with('media')->latest()->get();
+        $exercises = $trainingPlan->exercises()->with('media')->orderBy('name')->get();
 
         return view('exercises.index', compact('trainingPlan', 'exercises'));
     }

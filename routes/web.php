@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\CardioController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
@@ -45,6 +46,9 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/exercises/{exercise}', [ExerciseController::class, 'destroy'])
         ->name('exercises.destroy');
+
+    Route::get('/cardio', [CardioController::class, 'index'])->name('cardio');
+    Route::delete('/cardio/{cardioSession}', [CardioController::class, 'destroy'])->name('cardio.destroy');
 
 });
 

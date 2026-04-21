@@ -15,12 +15,14 @@ class LogWorkout extends Component
         ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => ''],
     ];
 
-    public ?array $lastSets      = null;
+    public ?array $lastSets       = null;
     public ?string $progressionTip = null;
+    public string $loggedAt        = '';
 
     public function mount(Exercise $exercise): void
     {
-        $this->exercise = $exercise;
+        $this->exercise  = $exercise;
+        $this->loggedAt  = now()->format('Y-m-d');
 
         $lastSession = $exercise->workoutSessions()->with('sets')->first();
 
@@ -63,15 +65,19 @@ class LogWorkout extends Component
     {
         abort_if($this->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
 
+        $baseRules = [
+            'loggedAt' => ['required', 'date', 'before_or_equal:today'],
+        ];
+
         if ($this->exercise->is_unilateral) {
-            $this->validate([
-                'sets'               => ['required', 'array', 'min:1'],
-                'sets.*.weight'      => ['required', 'numeric', 'min:0', 'max:9999'],
-                'sets.*.reps_left'   => ['required', 'integer', 'min:1', 'max:9999'],
-                'sets.*.reps_right'  => ['required', 'integer', 'min:1', 'max:9999'],
+            $this->validate($baseRules + [
+                'sets'              => ['required', 'array', 'min:1'],
+                'sets.*.weight'     => ['required', 'numeric', 'min:0', 'max:9999'],
+                'sets.*.reps_left'  => ['required', 'integer', 'min:1', 'max:9999'],
+                'sets.*.reps_right' => ['required', 'integer', 'min:1', 'max:9999'],
             ]);
         } else {
-            $this->validate([
+            $this->validate($baseRules + [
                 'sets'          => ['required', 'array', 'min:1'],
                 'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
                 'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
@@ -80,7 +86,7 @@ class LogWorkout extends Component
 
         $session = WorkoutSession::create([
             'exercise_id' => $this->exercise->id,
-            'logged_at'   => now(),
+            'logged_at'   => $this->loggedAt,
         ]);
 
         foreach ($this->sets as $i => $set) {
@@ -96,6 +102,7 @@ class LogWorkout extends Component
         $this->sets = [['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => '']];
         $this->lastSets = null;
         $this->progressionTip = null;
+        $this->loggedAt = now()->format('Y-m-d');
         $this->dispatch('session-saved');
     }
 

@@ -12,7 +12,7 @@ class TrainingPlanController extends Controller
     {
         abort_if($location->user_id !== Auth::id(), 403);
 
-        $plans = $location->trainingPlans()->with('media')->latest()->get();
+        $plans = $location->trainingPlans()->with('media')->orderBy('name')->get();
 
         return view('training-plans.index', compact('location', 'plans'));
     }

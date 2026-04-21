@@ -12,7 +12,7 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Auth::user()->locations()->with('media')->latest()->get();
+        $locations = Auth::user()->locations()->with('media')->orderBy('name')->get();
         $userId    = Auth::id();
 
         $todayDow = Carbon::today()->isoWeekday();
