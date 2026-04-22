@@ -14,19 +14,23 @@ class EditWorkoutSession extends Component
     public ?int $sessionId = null;
     public ?int $deletedSessionId = null;
     public string $sessionDate = '';
+    public bool $isUnilateral = false;
     public array $sets = [];
 
     #[On('load-session')]
     public function load(int $id): void
     {
-        $session = WorkoutSession::with('sets')->findOrFail($id);
+        $session = WorkoutSession::with('sets', 'exercise')->findOrFail($id);
         abort_if($session->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
 
-        $this->sessionId   = $id;
-        $this->sessionDate = $session->logged_at->format('d.m.Y H:i');
-        $this->sets        = $session->sets->map(fn($s) => [
-            'weight' => $s->weight,
-            'reps'   => $s->reps,
+        $this->sessionId    = $id;
+        $this->sessionDate  = $session->logged_at->format('d.m.Y H:i');
+        $this->isUnilateral = $session->exercise->is_unilateral;
+        $this->sets         = $session->sets->map(fn($s) => [
+            'weight'     => $s->weight,
+            'reps'       => $s->reps,
+            'reps_left'  => $s->reps_left,
+            'reps_right' => $s->reps_right,
         ])->toArray();
 
         $this->showUndo = false;
@@ -35,7 +39,7 @@ class EditWorkoutSession extends Component
 
     public function addSet(): void
     {
-        $this->sets[] = ['weight' => '', 'reps' => ''];
+        $this->sets[] = ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => ''];
     }
 
     public function removeSet(int $index): void
@@ -47,11 +51,20 @@ class EditWorkoutSession extends Component
 
     public function save(): void
     {
-        $this->validate([
-            'sets'          => ['required', 'array', 'min:1'],
-            'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
-            'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
-        ]);
+        if ($this->isUnilateral) {
+            $this->validate([
+                'sets'              => ['required', 'array', 'min:1'],
+                'sets.*.weight'     => ['required', 'numeric', 'min:0', 'max:9999'],
+                'sets.*.reps_left'  => ['required', 'integer', 'min:1', 'max:9999'],
+                'sets.*.reps_right' => ['required', 'integer', 'min:1', 'max:9999'],
+            ]);
+        } else {
+            $this->validate([
+                'sets'          => ['required', 'array', 'min:1'],
+                'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
+                'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
+            ]);
+        }
 
         $session = WorkoutSession::findOrFail($this->sessionId);
         abort_if($session->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
@@ -62,7 +75,9 @@ class EditWorkoutSession extends Component
             $session->sets()->create([
                 'set_number' => $i + 1,
                 'weight'     => $set['weight'],
-                'reps'       => $set['reps'],
+                'reps'       => $this->isUnilateral ? null : $set['reps'],
+                'reps_left'  => $this->isUnilateral ? $set['reps_left'] : null,
+                'reps_right' => $this->isUnilateral ? $set['reps_right'] : null,
             ]);
         }
 

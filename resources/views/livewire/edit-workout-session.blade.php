@@ -29,17 +29,45 @@
             </div>
 
             <form wire:submit="save" class="space-y-3">
+                @if($isUnilateral)
+                <div class="grid grid-cols-[1.5rem_1fr_1fr_1fr_1.5rem] gap-1.5 px-1">
+                    <span class="text-zinc-400 dark:text-zinc-600 text-xs text-center">#</span>
+                    <span class="text-zinc-500 dark:text-zinc-400 text-xs">Gewicht (kg)</span>
+                    <span class="text-zinc-500 dark:text-zinc-400 text-xs">Links</span>
+                    <span class="text-zinc-500 dark:text-zinc-400 text-xs">Rechts</span>
+                    <span></span>
+                </div>
+                @else
                 <div class="grid grid-cols-[1.5rem_1fr_1fr_1.5rem] gap-1.5 px-1">
                     <span class="text-zinc-400 dark:text-zinc-600 text-xs text-center">#</span>
-                    <span class="text-zinc-500 dark:text-zinc-400 text-xs">Weight (kg)</span>
+                    <span class="text-zinc-500 dark:text-zinc-400 text-xs">Gewicht (kg)</span>
                     <span class="text-zinc-500 dark:text-zinc-400 text-xs">Reps</span>
                     <span></span>
                 </div>
+                @endif
 
                 @foreach($sets as $i => $set)
+                    @if($isUnilateral)
+                    <div class="grid grid-cols-[1.5rem_1fr_1fr_1fr_1.5rem] gap-1.5 items-center min-w-0">
+                        <span class="text-zinc-400 dark:text-zinc-500 text-sm text-center font-mono">{{ $i + 1 }}</span>
+                        <input wire:model="sets.{{ $i }}.weight" type="number" inputmode="decimal" step="0.01" min="0"
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                        <input wire:model="sets.{{ $i }}.reps_left" type="number" inputmode="numeric" min="1" placeholder="L"
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                        <input wire:model="sets.{{ $i }}.reps_right" type="number" inputmode="numeric" min="1" placeholder="R"
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                        <button type="button" wire:click="removeSet({{ $i }})"
+                            class="text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors"
+                            @if(count($sets) === 1) disabled @endif>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    @else
                     <div class="grid grid-cols-[1.5rem_1fr_1fr_1.5rem] gap-1.5 items-center min-w-0">
                         <span class="text-zinc-400 dark:text-zinc-500 text-sm text-center font-mono">{{ $i + 1 }}</span>
-                        <input wire:model="sets.{{ $i }}.weight" type="number" inputmode="decimal" step="0.5" min="0"
+                        <input wire:model="sets.{{ $i }}.weight" type="number" inputmode="decimal" step="0.01" min="0"
                             class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
                         <input wire:model="sets.{{ $i }}.reps" type="number" inputmode="numeric" min="1"
                             class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
@@ -51,6 +79,7 @@
                             </svg>
                         </button>
                     </div>
+                    @endif
                 @endforeach
 
                 <button type="button" wire:click="addSet"

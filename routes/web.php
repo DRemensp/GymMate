@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\CardioController;
+use App\Http\Controllers\DataPortabilityController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
@@ -49,6 +50,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/cardio', [CardioController::class, 'index'])->name('cardio');
     Route::delete('/cardio/{cardioSession}', [CardioController::class, 'destroy'])->name('cardio.destroy');
+
+    Route::get('/data',                 [DataPortabilityController::class, 'index'])->name('data');
+    Route::get('/data/export/workouts', [DataPortabilityController::class, 'exportWorkouts'])->name('data.export.workouts');
+    Route::get('/data/export/cardio',   [DataPortabilityController::class, 'exportCardio'])->name('data.export.cardio');
+    Route::post('/data/import/workouts',[DataPortabilityController::class, 'importWorkouts'])->name('data.import.workouts');
+    Route::post('/data/import/cardio',  [DataPortabilityController::class, 'importCardio'])->name('data.import.cardio');
 
 });
 

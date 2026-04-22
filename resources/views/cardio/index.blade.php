@@ -136,10 +136,10 @@
         new Chart(document.getElementById('cardioChart'), {
             type: 'bar',
             data: {
-                labels:   {!! json_encode($weeks->pluck('label')) !!},
+                labels:   @json($weeks->pluck('label')),
                 datasets: [{
                     label: 'Minuten',
-                    data:  {!! json_encode($weeks->pluck('minutes')) !!},
+                    data:  @json($weeks->pluck('minutes')),
                     backgroundColor: 'rgba(249,115,22,0.7)',
                     borderColor:     'rgba(249,115,22,1)',
                     borderWidth: 2,
