@@ -94,7 +94,6 @@
                         <div
                             x-data="{
                                 open: false,
-                                chart: null,
                                 mode: 'volume',
                                 volumeData: {{ json_encode($stat['sparkline']) }},
                                 weightData: {{ json_encode($stat['sparkline_weight']) }},
@@ -102,54 +101,54 @@
                                     this.open = true;
                                     this.$nextTick(() => {
                                         const canvas = this.$refs.modalSparkline;
-                                        if (canvas && !this.chart) {
-                                            this.chart = new Chart(canvas, {
-                                                type: 'line',
-                                                data: {
-                                                    labels: Array.from({length: this.volumeData.length}, (_, i) => i + 1),
-                                                    datasets: [{
-                                                        data: [...this.volumeData],
-                                                        borderColor: '#f97316',
-                                                        borderWidth: 2.5,
-                                                        pointRadius: 3,
-                                                        pointBackgroundColor: '#f97316',
-                                                        tension: 0.4,
-                                                        fill: false,
-                                                    }]
-                                                },
-                                                options: {
-                                                    responsive: true,
-                                                    maintainAspectRatio: false,
-                                                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                                                    scales: {
-                                                        x: { display: false },
-                                                        y: {
-                                                            display: true,
-                                                            position: 'right',
-                                                            grid: { display: false },
-                                                            border: { display: false },
-                                                            ticks: {
-                                                                maxTicksLimit: 3,
-                                                                color: '#71717a',
-                                                                font: { size: 9 },
-                                                                callback: function(v) {
-                                                                    return v >= 1000 ? (v/1000).toFixed(1).replace('.0','') + 't' : v + 'kg';
-                                                                }
+                                        if (!canvas) return;
+                                        if (canvas._chartInstance) return;
+                                        canvas._chartInstance = new Chart(canvas, {
+                                            type: 'line',
+                                            data: {
+                                                labels: Array.from({length: this.volumeData.length}, (_, i) => i + 1),
+                                                datasets: [{
+                                                    data: this.volumeData.slice(),
+                                                    borderColor: '#f97316',
+                                                    borderWidth: 2.5,
+                                                    pointRadius: 3,
+                                                    pointBackgroundColor: '#f97316',
+                                                    tension: 0.4,
+                                                    fill: false,
+                                                }]
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                maintainAspectRatio: false,
+                                                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                                                scales: {
+                                                    x: { display: false },
+                                                    y: {
+                                                        display: true,
+                                                        position: 'right',
+                                                        grid: { display: false },
+                                                        border: { display: false },
+                                                        ticks: {
+                                                            maxTicksLimit: 3,
+                                                            color: '#71717a',
+                                                            font: { size: 9 },
+                                                            callback: function(v) {
+                                                                return v >= 1000 ? (v/1000).toFixed(1).replace('.0','') + 't' : v + 'kg';
                                                             }
                                                         }
-                                                    },
-                                                }
-                                            });
-                                        }
+                                                    }
+                                                },
+                                            }
+                                        });
                                     });
                                 },
                                 switchMode(m) {
                                     this.mode = m;
-                                    if (this.chart) {
-                                        // spread into plain array — Alpine proxies break Chart.js updates
-                                        this.chart.data.datasets[0].data = [...(m === 'volume' ? this.volumeData : this.weightData)];
-                                        this.chart.update();
-                                    }
+                                    const canvas = this.$refs.modalSparkline;
+                                    const chart = canvas?._chartInstance;
+                                    if (!chart) return;
+                                    chart.data.datasets[0].data = (m === 'volume' ? this.volumeData : this.weightData).slice();
+                                    chart.update();
                                 }
                             }"
                         >
