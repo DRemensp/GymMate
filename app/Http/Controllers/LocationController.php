@@ -19,6 +19,7 @@ class LocationController extends Controller
 
         // Alle 7 Wochentage laden
         $schedule = WeeklySchedule::where('user_id', $userId)
+            ->with('exercises')
             ->get()
             ->keyBy('day_of_week');
 

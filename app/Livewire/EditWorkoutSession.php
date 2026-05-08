@@ -24,7 +24,7 @@ class EditWorkoutSession extends Component
         abort_if($session->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
 
         $this->sessionId    = $id;
-        $this->sessionDate  = $session->logged_at->format('d.m.Y H:i');
+        $this->sessionDate  = $session->logged_at->format('Y-m-d');
         $this->isUnilateral = $session->exercise->is_unilateral;
         $this->sets         = $session->sets->map(fn($s) => [
             'weight'     => $s->weight,
@@ -51,15 +51,17 @@ class EditWorkoutSession extends Component
 
     public function save(): void
     {
+        $dateRules = ['sessionDate' => ['required', 'date', 'before_or_equal:today']];
+
         if ($this->isUnilateral) {
-            $this->validate([
+            $this->validate($dateRules + [
                 'sets'              => ['required', 'array', 'min:1'],
                 'sets.*.weight'     => ['required', 'numeric', 'min:0', 'max:9999'],
                 'sets.*.reps_left'  => ['required', 'integer', 'min:1', 'max:9999'],
                 'sets.*.reps_right' => ['required', 'integer', 'min:1', 'max:9999'],
             ]);
         } else {
-            $this->validate([
+            $this->validate($dateRules + [
                 'sets'          => ['required', 'array', 'min:1'],
                 'sets.*.weight' => ['required', 'numeric', 'min:0', 'max:9999'],
                 'sets.*.reps'   => ['required', 'integer', 'min:1', 'max:9999'],
@@ -68,6 +70,9 @@ class EditWorkoutSession extends Component
 
         $session = WorkoutSession::findOrFail($this->sessionId);
         abort_if($session->exercise->trainingPlan->location->user_id !== Auth::id(), 403);
+
+        $session->logged_at = $this->sessionDate;
+        $session->save();
 
         $session->sets()->delete();
 

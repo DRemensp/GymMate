@@ -6,9 +6,11 @@
 
         <div class="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-6 border border-zinc-300 dark:border-zinc-700">
             <div class="flex items-center justify-between mb-5">
-                <div>
+                <div class="flex-1 min-w-0 pr-2">
                     <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Edit Session</h2>
-                    <p class="text-zinc-500 text-xs mt-0.5">{{ $sessionDate }}</p>
+                    <input wire:model="sessionDate" type="date" max="{{ date('Y-m-d') }}"
+                        class="mt-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-1 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-orange-500 transition-colors"/>
+                    @error('sessionDate') <p class="text-red-500 text-xs mt-0.5">{{ $message }}</p> @enderror
                 </div>
                 <div class="flex items-center gap-2">
                     <button wire:click="delete"

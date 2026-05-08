@@ -95,6 +95,9 @@
                             x-data="{
                                 open: false,
                                 chart: null,
+                                mode: 'volume',
+                                volumeData: {{ json_encode($stat['sparkline']) }},
+                                weightData: {{ json_encode($stat['sparkline_weight']) }},
                                 openSheet() {
                                     this.open = true;
                                     this.$nextTick(() => {
@@ -103,9 +106,9 @@
                                             this.chart = new Chart(canvas, {
                                                 type: 'line',
                                                 data: {
-                                                    labels: {{ json_encode(array_keys($stat['sparkline'])) }},
+                                                    labels: Array.from({length: this.volumeData.length}, (_, i) => i),
                                                     datasets: [{
-                                                        data: {{ json_encode(array_values($stat['sparkline'])) }},
+                                                        data: this.volumeData,
                                                         borderColor: '#f97316',
                                                         borderWidth: 2.5,
                                                         pointRadius: 3,
@@ -123,6 +126,13 @@
                                             });
                                         }
                                     });
+                                },
+                                switchMode(m) {
+                                    this.mode = m;
+                                    if (this.chart) {
+                                        this.chart.data.datasets[0].data = m === 'volume' ? this.volumeData : this.weightData;
+                                        this.chart.update();
+                                    }
                                 }
                             }"
                         >
@@ -200,7 +210,21 @@
                                     {{-- Trend Sparkline --}}
                                     @if(count($stat['sparkline']) > 1)
                                     <div>
-                                        <p class="text-zinc-500 text-xs mb-2">Volumen-Trend (letzte {{ count($stat['sparkline']) }} Sessions)</p>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <p class="text-zinc-500 text-xs" x-text="mode === 'volume' ? 'Volumen-Trend' : 'Gewicht-Trend'"></p>
+                                            <div class="flex gap-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
+                                                <button @click="switchMode('volume')"
+                                                    :class="mode === 'volume' ? 'bg-orange-500 text-white' : 'text-zinc-500 dark:text-zinc-400'"
+                                                    class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors">
+                                                    Volumen
+                                                </button>
+                                                <button @click="switchMode('weight')"
+                                                    :class="mode === 'weight' ? 'bg-orange-500 text-white' : 'text-zinc-500 dark:text-zinc-400'"
+                                                    class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors">
+                                                    Gewicht
+                                                </button>
+                                            </div>
+                                        </div>
                                         <div class="h-28 w-full">
                                             <canvas x-ref="modalSparkline"></canvas>
                                         </div>

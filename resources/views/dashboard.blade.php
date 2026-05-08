@@ -113,10 +113,11 @@
                 <div class="flex gap-3 overflow-hidden">
                     @foreach($orderedDows as $i => $dow)
                         @php
-                            $entry   = $schedule->get($dow);
-                            $isToday = $i === 0;
-                            $isRest  = $entry && $entry->is_rest;
-                            $label   = $entry?->label;
+                            $entry     = $schedule->get($dow);
+                            $isToday   = $i === 0;
+                            $isRest    = $entry && $entry->is_rest;
+                            $exercises = $entry?->exercises ?? collect();
+                            $hasWork   = $exercises->isNotEmpty();
                         @endphp
                         <div class="flex-shrink-0 w-36 flex flex-col rounded-2xl border p-3 h-28
                             {{ $isToday
@@ -127,7 +128,7 @@
                                 <span class="text-xs font-bold {{ $isToday ? 'text-orange-400' : 'text-zinc-500 dark:text-zinc-500' }}">
                                     {{ $dayFull[$dow] }}
                                 </span>
-                                @if($isToday && $label && !$isRest)
+                                @if($isToday && $hasWork && !$isRest)
                                     @if($loggedToday)
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>
                                     @else
@@ -136,14 +137,23 @@
                                 @endif
                             </div>
 
-                            <div class="flex-1 flex items-start">
+                            <div class="flex-1 flex items-start overflow-hidden">
                                 @if($isRest)
                                     <p class="text-zinc-400 dark:text-zinc-600 text-xs font-medium">Rest Day</p>
-                                @elseif($label)
-                                    <p class="text-xs font-semibold leading-snug line-clamp-4
-                                        {{ $isToday ? 'text-zinc-900 dark:text-white' : 'text-zinc-600 dark:text-zinc-400' }}">
-                                        {{ $label }}
-                                    </p>
+                                @elseif($hasWork)
+                                    <div class="space-y-0.5 w-full">
+                                        @foreach($exercises->take(4) as $ex)
+                                            <p class="text-[10px] leading-tight font-medium truncate
+                                                {{ $isToday ? 'text-zinc-800 dark:text-zinc-200' : 'text-zinc-500 dark:text-zinc-400' }}">
+                                                {{ $ex->name }}
+                                            </p>
+                                        @endforeach
+                                        @if($exercises->count() > 4)
+                                            <p class="text-[10px] text-zinc-400 dark:text-zinc-600">
+                                                +{{ $exercises->count() - 4 }} mehr
+                                            </p>
+                                        @endif
+                                    </div>
                                 @else
                                     <p class="text-zinc-400 dark:text-zinc-700 text-xs">—</p>
                                 @endif
