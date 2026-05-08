@@ -31,36 +31,51 @@
                         <h2 class="text-zinc-900 dark:text-white font-semibold">History</h2>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-zinc-300 dark:border-zinc-700">
-                                    <th class="text-left text-zinc-500 font-medium px-5 py-3 w-36">Date</th>
-                                    <th class="text-left text-zinc-500 font-medium px-3 py-3">Set</th>
-                                    <th class="text-left text-zinc-500 font-medium px-3 py-3">Weight</th>
-                                    <th class="text-left text-zinc-500 font-medium px-3 py-3">Reps</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50">
-                                @foreach($sessions as $session)
-                                    @foreach($session->sets as $set)
-                                        <tr x-on:click="Livewire.dispatchTo('edit-workout-session', 'load-session', { id: {{ $session->id }} })"
-                                            class="hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors cursor-pointer group">
-                                            <td class="px-5 py-2.5 text-zinc-500 dark:text-zinc-400">
-                                                @if($loop->first)
-                                                    <span class="group-hover:text-orange-500 transition-colors">{{ $session->logged_at->format('d.m.Y') }}</span>
-                                                    <span class="block text-zinc-400 dark:text-zinc-600 text-xs">{{ $session->logged_at->format('H:i') }}</span>
-                                                @endif
-                                            </td>
-                                            <td class="px-3 py-2.5 text-zinc-400 dark:text-zinc-500 font-mono text-xs">{{ $set->set_number }}</td>
-                                            <td class="px-3 py-2.5 text-zinc-900 dark:text-white font-semibold">{{ $set->weight }} kg</td>
-                                            <td class="px-3 py-2.5 text-zinc-600 dark:text-zinc-300">{{ $set->reps }}x</td>
-                                        </tr>
-                                    @endforeach
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-zinc-300 dark:border-zinc-700">
+                                <th class="text-left text-zinc-500 font-medium px-4 py-2.5 text-xs">Datum</th>
+                                <th class="text-center text-zinc-500 font-medium px-1 py-2.5 text-xs w-7">#</th>
+                                <th class="text-left text-zinc-500 font-medium px-2 py-2.5 text-xs">Gewicht</th>
+                                <th class="text-left text-zinc-500 font-medium px-2 py-2.5 pr-4 text-xs">
+                                    {{ $exercise->is_unilateral ? 'L / R' : 'Wdh.' }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($sessions as $session)
+                                @foreach($session->sets as $set)
+                                    @php
+                                        $dayBreak = $loop->first && !$loop->parent->first;
+                                        $setBreak = !$loop->first;
+                                        $reps = $exercise->is_unilateral
+                                            ? (($set->reps_left ?? '—') . ' / ' . ($set->reps_right ?? '—'))
+                                            : (($set->reps ?? '—') . 'x');
+                                    @endphp
+                                    <tr x-on:click="Livewire.dispatchTo('edit-workout-session', 'load-session', { id: {{ $session->id }} })"
+                                        class="hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors cursor-pointer group
+                                            {{ $dayBreak ? 'border-t-2 border-zinc-300 dark:border-zinc-600' : ($setBreak ? 'border-t border-zinc-100 dark:border-zinc-800' : '') }}">
+                                        <td class="px-4 py-2 text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                                            @if($loop->first)
+                                                <span class="font-medium group-hover:text-orange-500 transition-colors">
+                                                    {{ $session->logged_at->format('d.m.Y') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center py-2 px-1 text-zinc-400 dark:text-zinc-500 font-mono text-xs w-7">
+                                            {{ $set->set_number }}
+                                        </td>
+                                        <td class="px-2 py-2 text-zinc-900 dark:text-white font-semibold text-sm whitespace-nowrap">
+                                            {{ rtrim(rtrim(number_format((float)$set->weight, 2, '.', ''), '0'), '.') }} kg
+                                        </td>
+                                        <td class="px-2 py-2 pr-4 text-zinc-600 dark:text-zinc-300 text-sm whitespace-nowrap">
+                                            {{ $reps }}
+                                        </td>
+                                    </tr>
                                 @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
                 @else
                     <p class="text-zinc-500 text-sm text-center py-4">No sessions logged yet.</p>
