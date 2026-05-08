@@ -20,10 +20,25 @@ class TrainingPlanController extends Controller
 
         $todayDow = Carbon::today()->isoWeekday();
 
+        // Only show exercises belonging to this location in the week overview
+        $locationExerciseIds = $location->trainingPlans()
+            ->with('exercises')
+            ->get()
+            ->flatMap->exercises
+            ->pluck('id')
+            ->flip();
+
         $schedule = WeeklySchedule::where('user_id', $userId)
             ->with('exercises')
             ->get()
-            ->keyBy('day_of_week');
+            ->keyBy('day_of_week')
+            ->map(function ($entry) use ($locationExerciseIds) {
+                $entry->setRelation(
+                    'exercises',
+                    $entry->exercises->filter(fn($ex) => $locationExerciseIds->has($ex->id))->values()
+                );
+                return $entry;
+            });
 
         // Map each day-of-week to its actual upcoming calendar date (today = offset 0)
         $weekDates = collect(range(0, 6))->mapWithKeys(function ($i) use ($todayDow) {
@@ -33,8 +48,8 @@ class TrainingPlanController extends Controller
         });
 
         // Build a "exerciseId|YYYY-MM-DD" lookup set for sessions logged this week window
-        $loggedSet     = [];
-        $scheduledIds  = $schedule->flatMap->exercises->pluck('id')->unique();
+        $loggedSet    = [];
+        $scheduledIds = $schedule->flatMap->exercises->pluck('id')->unique();
 
         if ($scheduledIds->isNotEmpty()) {
             WorkoutSession::whereIn('exercise_id', $scheduledIds)
