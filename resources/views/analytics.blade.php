@@ -106,9 +106,9 @@
                                             this.chart = new Chart(canvas, {
                                                 type: 'line',
                                                 data: {
-                                                    labels: Array.from({length: this.volumeData.length}, (_, i) => i),
+                                                    labels: Array.from({length: this.volumeData.length}, (_, i) => i + 1),
                                                     datasets: [{
-                                                        data: this.volumeData,
+                                                        data: [...this.volumeData],
                                                         borderColor: '#f97316',
                                                         borderWidth: 2.5,
                                                         pointRadius: 3,
@@ -121,7 +121,23 @@
                                                     responsive: true,
                                                     maintainAspectRatio: false,
                                                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                                                    scales: { x: { display: false }, y: { display: false } },
+                                                    scales: {
+                                                        x: { display: false },
+                                                        y: {
+                                                            display: true,
+                                                            position: 'right',
+                                                            grid: { display: false },
+                                                            border: { display: false },
+                                                            ticks: {
+                                                                maxTicksLimit: 3,
+                                                                color: '#71717a',
+                                                                font: { size: 9 },
+                                                                callback: function(v) {
+                                                                    return v >= 1000 ? (v/1000).toFixed(1).replace('.0','') + 't' : v + 'kg';
+                                                                }
+                                                            }
+                                                        }
+                                                    },
                                                 }
                                             });
                                         }
@@ -130,7 +146,8 @@
                                 switchMode(m) {
                                     this.mode = m;
                                     if (this.chart) {
-                                        this.chart.data.datasets[0].data = m === 'volume' ? this.volumeData : this.weightData;
+                                        // spread into plain array — Alpine proxies break Chart.js updates
+                                        this.chart.data.datasets[0].data = [...(m === 'volume' ? this.volumeData : this.weightData)];
                                         this.chart.update();
                                     }
                                 }

@@ -104,66 +104,6 @@
 
             <livewire:edit-location />
 
-            {{-- Wochenübersicht --}}
-            @php
-                $dayFull = [1=>'Montag',2=>'Dienstag',3=>'Mittwoch',4=>'Donnerstag',5=>'Freitag',6=>'Samstag',7=>'Sonntag'];
-                $orderedDows = collect(range(0, 6))->map(fn($i) => (($todayDow - 1 + $i) % 7) + 1);
-            @endphp
-            <div class="mt-8 sm:pl-14">
-                <div class="flex gap-3 overflow-hidden">
-                    @foreach($orderedDows as $i => $dow)
-                        @php
-                            $entry     = $schedule->get($dow);
-                            $isToday   = $i === 0;
-                            $isRest    = $entry && $entry->is_rest;
-                            $exercises = $entry?->exercises ?? collect();
-                            $hasWork   = $exercises->isNotEmpty();
-                        @endphp
-                        <div class="flex-shrink-0 w-36 flex flex-col rounded-2xl border p-3 h-28
-                            {{ $isToday
-                                ? 'bg-orange-500/10 border-orange-500/40'
-                                : 'bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700' }}">
-
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs font-bold {{ $isToday ? 'text-orange-400' : 'text-zinc-500 dark:text-zinc-500' }}">
-                                    {{ $dayFull[$dow] }}
-                                </span>
-                                @if($isToday && $hasWork && !$isRest)
-                                    @if($loggedToday)
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>
-                                    @else
-                                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse flex-shrink-0"></span>
-                                    @endif
-                                @endif
-                            </div>
-
-                            <div class="flex-1 flex items-start overflow-hidden">
-                                @if($isRest)
-                                    <p class="text-zinc-400 dark:text-zinc-600 text-xs font-medium">Rest Day</p>
-                                @elseif($hasWork)
-                                    <div class="space-y-0.5 w-full">
-                                        @foreach($exercises->take(4) as $ex)
-                                            <p class="text-[10px] leading-tight font-medium truncate
-                                                {{ $isToday ? 'text-zinc-800 dark:text-zinc-200' : 'text-zinc-500 dark:text-zinc-400' }}">
-                                                {{ $ex->name }}
-                                            </p>
-                                        @endforeach
-                                        @if($exercises->count() > 4)
-                                            <p class="text-[10px] text-zinc-400 dark:text-zinc-600">
-                                                +{{ $exercises->count() - 4 }} mehr
-                                            </p>
-                                        @endif
-                                    </div>
-                                @else
-                                    <p class="text-zinc-400 dark:text-zinc-700 text-xs">—</p>
-                                @endif
-                            </div>
-
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
         </div>
     </div>
 

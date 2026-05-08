@@ -30,6 +30,81 @@
                 </button>
             </div>
 
+            {{-- Wochenübersicht --}}
+            @php
+                $dayShort    = [1=>'Mo',2=>'Di',3=>'Mi',4=>'Do',5=>'Fr',6=>'Sa',7=>'So'];
+                $dayFull     = [1=>'Montag',2=>'Dienstag',3=>'Mittwoch',4=>'Donnerstag',5=>'Freitag',6=>'Samstag',7=>'Sonntag'];
+                $orderedDows = collect(range(0, 6))->map(fn($i) => (($todayDow - 1 + $i) % 7) + 1);
+            @endphp
+            <div class="mb-8 sm:pl-14">
+                <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    @foreach($orderedDows as $i => $dow)
+                        @php
+                            $entry     = $schedule->get($dow);
+                            $isToday   = $i === 0;
+                            $isRest    = $entry && $entry->is_rest;
+                            $exercises = $entry?->exercises ?? collect();
+                            $date      = $weekDates[$dow];
+                            $allDone   = $exercises->isNotEmpty() && $exercises->every(fn($ex) => isset($loggedSet[$ex->id . '|' . $date]));
+                            $anyDone   = $exercises->some(fn($ex) => isset($loggedSet[$ex->id . '|' . $date]));
+                        @endphp
+                        <div class="flex-shrink-0 w-40 flex flex-col rounded-2xl border
+                            {{ $isToday ? 'bg-orange-500/10 border-orange-500/40' : 'bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700' }}
+                            overflow-hidden">
+
+                            {{-- Day header --}}
+                            <div class="flex items-center justify-between px-3 pt-2.5 pb-1.5
+                                {{ $isToday ? 'border-b border-orange-500/20' : 'border-b border-zinc-100 dark:border-zinc-800' }}">
+                                <span class="text-xs font-bold {{ $isToday ? 'text-orange-400' : 'text-zinc-500 dark:text-zinc-500' }}">
+                                    {{ $dayFull[$dow] }}
+                                    @if($isToday)
+                                        <span class="ml-1 text-[10px] text-orange-400/60 font-normal">heute</span>
+                                    @endif
+                                </span>
+                                @if($allDone && !$isRest)
+                                    <svg class="w-3.5 h-3.5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"/>
+                                    </svg>
+                                @elseif($anyDone && !$isRest)
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0"></span>
+                                @endif
+                            </div>
+
+                            {{-- Content --}}
+                            <div class="px-3 py-2 space-y-1 min-h-[4rem]">
+                                @if($isRest)
+                                    <p class="text-zinc-400 dark:text-zinc-600 text-xs font-medium">Rest Day</p>
+                                @elseif($exercises->isEmpty())
+                                    <p class="text-zinc-300 dark:text-zinc-700 text-xs">—</p>
+                                @else
+                                    @foreach($exercises as $ex)
+                                        @php $done = isset($loggedSet[$ex->id . '|' . $date]); @endphp
+                                        <a href="{{ route('exercises.show', $ex) }}"
+                                            class="flex items-center gap-1.5 group/ex">
+                                            @if($done)
+                                                <svg class="w-3 h-3 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"/>
+                                                </svg>
+                                            @else
+                                                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0
+                                                    {{ $isToday ? 'bg-orange-400/60' : 'bg-zinc-300 dark:bg-zinc-600' }}"></span>
+                                            @endif
+                                            <span class="text-[11px] leading-tight truncate font-medium
+                                                {{ $done ? 'line-through text-zinc-400 dark:text-zinc-600' : ($isToday ? 'text-zinc-800 dark:text-zinc-200 group-hover/ex:text-orange-500' : 'text-zinc-500 dark:text-zinc-400 group-hover/ex:text-orange-500') }}
+                                                transition-colors">
+                                                {{ $ex->name }}
+                                            </span>
+                                        </a>
+                                    @endforeach
+                                @endif
+                            </div>
+
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Trainingspläne --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:pl-14"
                  @plan-created.window="window.location.reload()"
                  @plan-updated.window="window.location.reload()">
