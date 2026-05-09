@@ -5,7 +5,10 @@ use App\Http\Controllers\CardioController;
 use App\Http\Controllers\DataPortabilityController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\FollowingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\TrainingPlanController;
 use App\Http\Controllers\WeeklyScheduleController;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [LocationController::class, 'index'])
+Route::get('/u/{name}', [PublicProfileController::class, 'show'])->name('profile.public');
+
+Route::get('/standorte', [LocationController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -23,29 +28,37 @@ Route::get('/analyse', [AnalyticsController::class, 'index'])
     ->name('analytics');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/onboarding',  [OnboardingController::class, 'show'])->name('onboarding');
+    Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
+
     Route::get('/trainingsplan', [WeeklyScheduleController::class, 'index'])->name('weekly-schedule');
     Route::post('/trainingsplan', [WeeklyScheduleController::class, 'update'])->name('weekly-schedule.update');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/einstellungen', [ProfileController::class, 'edit'])->name('settings.edit');
+    Route::patch('/einstellungen', [ProfileController::class, 'update'])->name('settings.update');
+    Route::post('/einstellungen/avatar', [ProfileController::class, 'updateAvatar'])->name('settings.avatar');
+    Route::delete('/einstellungen', [ProfileController::class, 'destroy'])->name('settings.destroy');
 
-    Route::get('/locations/{location}/training-plans', [TrainingPlanController::class, 'index'])
+    Route::get('/following', [FollowingController::class, 'index'])->name('following');
+    Route::post('/following', [FollowingController::class, 'store'])->name('following.store');
+    Route::delete('/following/{userId}', [FollowingController::class, 'destroy'])->name('following.destroy');
+
+    Route::get('/standorte/{location}/trainingskategorie', [TrainingPlanController::class, 'index'])
         ->name('locations.training-plans.index');
 
-    Route::delete('/locations/{location}', [LocationController::class, 'destroy'])
+    Route::delete('/standorte/{location}', [LocationController::class, 'destroy'])
         ->name('locations.destroy');
 
-    Route::delete('/training-plans/{trainingPlan}', [TrainingPlanController::class, 'destroy'])
+    Route::delete('/trainingskategorie/{trainingPlan}', [TrainingPlanController::class, 'destroy'])
         ->name('training-plans.destroy');
 
-    Route::get('/training-plans/{trainingPlan}/exercises', [ExerciseController::class, 'index'])
+    Route::get('/trainingskategorie/{trainingPlan}/uebungen', [ExerciseController::class, 'index'])
         ->name('training-plans.exercises.index');
 
-    Route::get('/exercises/{exercise}', [ExerciseController::class, 'show'])
+    Route::get('/uebungen/{exercise}', [ExerciseController::class, 'show'])
         ->name('exercises.show');
 
-    Route::delete('/exercises/{exercise}', [ExerciseController::class, 'destroy'])
+    Route::delete('/uebungen/{exercise}', [ExerciseController::class, 'destroy'])
         ->name('exercises.destroy');
 
     Route::get('/cardio', [CardioController::class, 'index'])->name('cardio');

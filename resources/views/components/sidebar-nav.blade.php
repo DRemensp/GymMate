@@ -66,6 +66,14 @@
             </svg>
             Export / Import
         </a>
+        <a href="{{ route('following') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors {{ request()->routeIs('following*') ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white' : '' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
+            </svg>
+            Following
+        </a>
         @endauth
 
     </nav>
@@ -73,15 +81,23 @@
     {{-- Footer --}}
     <div class="px-4 py-5 border-t border-zinc-200 dark:border-zinc-700">
         @auth
-        <div class="flex items-center gap-3 px-3 py-2 mb-2">
-            <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+        <a href="{{ route('profile.public', Auth::user()->name) }}"
+            class="flex items-center gap-3 px-3 py-2 mb-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors group {{ request()->routeIs('profile.public') ? 'bg-zinc-100 dark:bg-zinc-800' : '' }}">
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                @if(Auth::user()->avatarUrl())
+                    <img src="{{ Auth::user()->avatarUrl() }}" alt="" class="w-full h-full object-cover">
+                @else
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                @endif
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-zinc-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ Auth::user()->email }}</p>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400 truncate">Profil bearbeiten</p>
             </div>
-        </div>
+            <svg class="w-4 h-4 text-zinc-400 dark:text-zinc-600 group-hover:text-zinc-600 dark:group-hover:text-zinc-400 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
         {{-- Theme Toggle --}}
         <div class="flex items-center justify-between px-3 py-2 mb-1">
             <div class="flex items-center gap-2">

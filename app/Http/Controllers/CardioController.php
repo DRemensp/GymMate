@@ -18,6 +18,8 @@ class CardioController extends Controller
         $thisWeek = $sessions->filter(fn($s) => $s->logged_at->isCurrentWeek());
         $weeklyMinutes  = $thisWeek->sum('duration_minutes');
         $weeklyCount    = $thisWeek->count();
+        $weeklyCalories = $thisWeek->sum('calories_burned');
+        $hasWeightData  = $user->hasCompleteProfile();
         $favoriteActivity = $sessions->groupBy('activity')
             ->map->count()
             ->sortDesc()
@@ -47,7 +49,7 @@ class CardioController extends Controller
             ->values();
 
         return view('cardio.index', compact(
-            'sessions', 'weeklyMinutes', 'weeklyCount',
+            'sessions', 'weeklyMinutes', 'weeklyCount', 'weeklyCalories', 'hasWeightData',
             'favoriteActivity', 'weeks', 'activityBreakdown'
         ));
     }

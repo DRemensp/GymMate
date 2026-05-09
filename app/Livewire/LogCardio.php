@@ -59,6 +59,16 @@ class LogCardio extends Component
             ? (int) round(($this->hiitRounds * ($this->hiitWork + $this->hiitRest)) / 60)
             : (int) $this->duration;
 
+        $user = Auth::user();
+        $calories = ($user->weight_kg !== null)
+            ? CardioSession::calculateCalories(
+                $this->activity,
+                $this->intensity,
+                max(1, $durationMinutes),
+                (float) $user->weight_kg
+            )
+            : null;
+
         CardioSession::create([
             'user_id'           => Auth::id(),
             'activity'          => $this->activity,
@@ -69,6 +79,7 @@ class LogCardio extends Component
             'hiit_work_seconds' => $this->isHiit() ? $this->hiitWork : null,
             'hiit_rest_seconds' => $this->isHiit() ? $this->hiitRest : null,
             'notes'             => $this->notes ?: null,
+            'calories_burned'   => $calories,
             'logged_at'         => $this->loggedAt,
         ]);
 

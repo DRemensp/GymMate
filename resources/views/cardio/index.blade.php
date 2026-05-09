@@ -12,7 +12,7 @@
             <div class="sm:pl-14 space-y-6">
 
                 {{-- Stats --}}
-                <div class="grid grid-cols-3 gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div class="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-700 rounded-2xl p-4 text-center">
                         <p class="text-2xl font-bold text-orange-500">{{ $weeklyMinutes }}</p>
                         <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">Min diese Woche</p>
@@ -26,6 +26,15 @@
                             {{ $favoriteActivity ? (\App\Models\CardioSession::ACTIVITIES[$favoriteActivity]['label'] ?? '–') : '–' }}
                         </p>
                         <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">Beliebteste</p>
+                    </div>
+                    <div class="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-700 rounded-2xl p-4 text-center">
+                        @if($hasWeightData)
+                            <p class="text-2xl font-bold text-orange-500">{{ number_format($weeklyCalories) }}</p>
+                            <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">kcal diese Woche</p>
+                        @else
+                            <a href="{{ route('settings.edit') }}" class="text-sm font-medium text-orange-500 hover:underline leading-tight block mt-1">Gewicht eintragen</a>
+                            <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">für kcal-Berechnung</p>
+                        @endif
                     </div>
                 </div>
 
@@ -61,60 +70,50 @@
                     <div class="px-5 py-4 border-b border-zinc-300 dark:border-zinc-700">
                         <h2 class="text-zinc-900 dark:text-white font-semibold">History</h2>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-zinc-300 dark:border-zinc-700">
-                                    <th class="text-left text-zinc-500 font-medium px-5 py-3">Datum</th>
-                                    <th class="text-left text-zinc-500 font-medium px-3 py-3">Aktivität</th>
-                                    <th class="text-left text-zinc-500 font-medium px-3 py-3">Dauer</th>
-                                    <th class="text-left text-zinc-500 font-medium px-3 py-3">Details</th>
-                                    <th class="px-3 py-3"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50">
-                                @foreach($sessions as $session)
-                                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
-                                        <td class="px-5 py-2.5">
-                                            <span class="text-zinc-500 dark:text-zinc-400">{{ $session->logged_at->format('d.m.Y') }}</span>
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <span class="text-zinc-900 dark:text-white font-medium">{{ $session->activityLabel() }}</span>
-                                            <span class="ml-1.5 text-xs px-1.5 py-0.5 rounded-full
-                                                {{ $session->intensity === 'leicht' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : ($session->intensity === 'intensiv' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400') }}">
-                                                {{ ucfirst($session->intensity) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-3 py-2.5 text-zinc-900 dark:text-white font-semibold">
-                                            {{ $session->duration_minutes }} Min
-                                        </td>
-                                        <td class="px-3 py-2.5 text-zinc-500 dark:text-zinc-400 text-xs">
-                                            @if($session->distance_km)
-                                                {{ $session->distance_km }} km
-                                            @elseif($session->hiit_rounds)
-                                                {{ $session->hiit_rounds }}× {{ $session->hiit_work_seconds }}s/{{ $session->hiit_rest_seconds }}s
-                                            @elseif($session->notes)
-                                                {{ $session->notes }}
-                                            @else
-                                                —
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <form method="POST" action="{{ route('cardio.destroy', $session) }}">
-                                                @csrf @method('DELETE')
-                                                <button type="submit"
-                                                    class="text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="divide-y divide-zinc-100 dark:divide-zinc-800/50">
+                        @foreach($sessions as $session)
+                            <div class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
+                                {{-- Linke Seite: Datum + Aktivität + Badge --}}
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-zinc-900 dark:text-white font-medium text-sm">{{ $session->activityLabel() }}</span>
+                                        <span class="text-xs px-1.5 py-0.5 rounded-full
+                                            {{ $session->intensity === 'leicht' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : ($session->intensity === 'intensiv' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400') }}">
+                                            {{ ucfirst($session->intensity) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                                        <span class="text-zinc-400 dark:text-zinc-500 text-xs">{{ $session->logged_at->format('d.m.Y') }}</span>
+                                        <span class="text-zinc-300 dark:text-zinc-700 text-xs">·</span>
+                                        <span class="text-zinc-500 dark:text-zinc-400 text-xs font-medium">{{ $session->duration_minutes }} Min</span>
+                                        @if($session->calories_burned)
+                                            <span class="text-zinc-300 dark:text-zinc-700 text-xs">·</span>
+                                            <span class="text-zinc-500 dark:text-zinc-400 text-xs">{{ number_format($session->calories_burned) }} kcal</span>
+                                        @endif
+                                        @if($session->distance_km)
+                                            <span class="text-zinc-300 dark:text-zinc-700 text-xs">·</span>
+                                            <span class="text-zinc-500 dark:text-zinc-400 text-xs">{{ $session->distance_km }} km</span>
+                                        @elseif($session->hiit_rounds)
+                                            <span class="text-zinc-300 dark:text-zinc-700 text-xs">·</span>
+                                            <span class="text-zinc-500 dark:text-zinc-400 text-xs">{{ $session->hiit_rounds }}× {{ $session->hiit_work_seconds }}s/{{ $session->hiit_rest_seconds }}s</span>
+                                        @elseif($session->notes)
+                                            <span class="text-zinc-300 dark:text-zinc-700 text-xs">·</span>
+                                            <span class="text-zinc-500 dark:text-zinc-400 text-xs truncate max-w-[120px]">{{ $session->notes }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                {{-- Rechts: Löschen --}}
+                                <form method="POST" action="{{ route('cardio.destroy', $session) }}" class="shrink-0">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="p-2 text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
                 @else

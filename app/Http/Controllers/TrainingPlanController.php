@@ -40,22 +40,22 @@ class TrainingPlanController extends Controller
                 return $entry;
             });
 
-        // Map each day-of-week to its actual upcoming calendar date (today = offset 0)
-        $weekDates = collect(range(0, 6))->mapWithKeys(function ($i) use ($todayDow) {
-            $dow  = (($todayDow - 1 + $i) % 7) + 1;
+        // Map each day-of-week to its actual date: yesterday (-1) through next 5 days (+5)
+        $weekDates = collect(range(-1, 5))->mapWithKeys(function ($i) use ($todayDow) {
+            $dow  = (($todayDow - 1 + $i + 7) % 7) + 1;
             $date = Carbon::today()->addDays($i)->toDateString();
             return [$dow => $date];
         });
 
-        // Build a "exerciseId|YYYY-MM-DD" lookup set for sessions logged this week window
+        // Build a "exerciseId|YYYY-MM-DD" lookup set — includes yesterday for "Nachholen"
         $loggedSet    = [];
         $scheduledIds = $schedule->flatMap->exercises->pluck('id')->unique();
 
         if ($scheduledIds->isNotEmpty()) {
             WorkoutSession::whereIn('exercise_id', $scheduledIds)
                 ->whereBetween('logged_at', [
-                    Carbon::today()->startOfDay(),
-                    Carbon::today()->addDays(6)->endOfDay(),
+                    Carbon::today()->subDay()->startOfDay(),
+                    Carbon::today()->addDays(5)->endOfDay(),
                 ])
                 ->get(['exercise_id', 'logged_at'])
                 ->each(function ($s) use (&$loggedSet) {
