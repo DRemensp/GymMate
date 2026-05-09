@@ -17,7 +17,7 @@ class PublicProfileController extends Controller
 
         $sessions = WorkoutSession::whereHas('exercise.trainingPlan.location', fn($q) =>
                 $q->where('user_id', $user->id))
-            ->with('sets')
+            ->with(['sets', 'exercise'])
             ->orderByDesc('logged_at')
             ->get();
 
@@ -49,6 +49,14 @@ class PublicProfileController extends Controller
             ->unique()
             ->flip(); // day => true for O(1) lookup
 
+        // Favorite exercise
+        $favoriteExercise = $sessions->isNotEmpty()
+            ? $sessions->groupBy('exercise_id')
+                ->map(fn($g) => ['name' => $g->first()->exercise?->name, 'count' => $g->count()])
+                ->sortByDesc('count')
+                ->first()
+            : null;
+
         // Weekly schedule (Wochenplan)
         $weeklySchedule = WeeklySchedule::where('user_id', $user->id)
             ->with('exercises')
@@ -62,6 +70,7 @@ class PublicProfileController extends Controller
             'totalVolume'      => $totalVolume,
             'streak'           => $streak,
             'favoriteLocation' => $favoriteLocation,
+            'favoriteExercise' => $favoriteExercise,
             'trainedDays'      => $trainedDays,
             'daysInMonth'      => $daysInMonth,
             'weeklySchedule'   => $weeklySchedule,

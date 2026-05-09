@@ -18,7 +18,7 @@
     @if($results->isNotEmpty())
     <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[22px] overflow-hidden">
         <div class="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
-            <span class="font-mono text-[10px] text-zinc-400 uppercase tracking-[0.08em]">{{ $results->count() }} Ergebnis{{ $results->count() !== 1 ? 'se' : '' }}</span>
+            <span class="font-mono text-[10px] text-zinc-400 uppercase tracking-[0.08em]">{{ $results->count() }} {{ $results->count() === 1 ? 'Ergebnis' : 'Ergebnisse' }}</span>
         </div>
         @foreach($results as $result)
         @php $isFollowing = $followingIds->contains($result->id); @endphp

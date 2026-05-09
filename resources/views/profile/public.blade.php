@@ -64,7 +64,7 @@
 
                 <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[18px] p-4">
                     <div class="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.08em] mb-1">
-                        Streak {{ $streak > 0 ? '🔥' : '' }}
+                        Wochen Streak {{ $streak > 0 ? '🔥' : '' }}
                     </div>
                     <div class="flex items-baseline gap-1 leading-none">
                         <span class="text-[28px] font-medium text-zinc-900 dark:text-white tracking-tight">{{ $streak }}</span>
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[18px] p-4">
-                    <div class="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.08em] mb-1">Volumen</div>
+                    <div class="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.08em] mb-1">Geliftet</div>
                     @if($totalVolume >= 1000)
                         <div class="flex items-baseline gap-0.5 leading-none">
                             <span class="text-[28px] font-medium text-zinc-900 dark:text-white tracking-tight">{{ number_format($totalVolume / 1000, 1) }}</span>
@@ -115,6 +115,16 @@
                     <div class="text-[11px] {{ $bmiColor }} mt-0.5">{{ $bmiLabel }}</div>
                 </div>
                 @endif
+
+                <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[18px] p-4">
+                    <div class="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.08em] mb-1">Lieblingsübung</div>
+                    @if($favoriteExercise && $favoriteExercise['name'])
+                        <div class="text-[14px] font-semibold text-zinc-900 dark:text-white leading-tight">{{ $favoriteExercise['name'] }}</div>
+                        <div class="text-[11px] text-zinc-400 mt-0.5">{{ $favoriteExercise['count'] }}× trainiert</div>
+                    @else
+                        <div class="text-[22px] font-medium text-zinc-300 dark:text-zinc-700 leading-none">–</div>
+                    @endif
+                </div>
             </div>
 
             {{-- Aktivität + Letztes Training nebeneinander --}}
