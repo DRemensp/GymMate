@@ -117,4 +117,8 @@
         </div>
     </div>
 
+    <x-tour-popup storageKey="gymmate-tour-exercises" icon="💪" title="Erstelle deine Übungen">
+        Tippe auf <strong class="text-zinc-700 dark:text-zinc-300">+ Übung</strong>. Du kannst festlegen, ob die Übung beidhändig oder einhändig ausgeführt wird — das beeinflusst die Volumenberechnung.
+    </x-tour-popup>
+
 </x-layouts.sidebar>

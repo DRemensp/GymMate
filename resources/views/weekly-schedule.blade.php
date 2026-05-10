@@ -119,4 +119,8 @@
         </div>
     </div>
 
+    <x-tour-popup storageKey="gymmate-tour-weekly" icon="📅" title="Deine Trainingswoche">
+        Weise jedem Wochentag einen Trainingsplan zu oder markiere ihn als Ruhetag. Am besten erst den Wochenplan festlegen, wenn du alle Übungen eingetragen hast.
+    </x-tour-popup>
+
 </x-layouts.sidebar>

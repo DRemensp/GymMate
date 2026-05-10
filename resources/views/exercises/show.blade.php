@@ -85,6 +85,10 @@
         </div>
     </div>
 
+    <x-tour-popup storageKey="gymmate-tour-logging" icon="📊" title="Training eintragen">
+        Trage nach dem Training Gewicht, Wiederholungen und Sätze ein. Vergangene Einträge kannst du jederzeit bearbeiten oder löschen.
+    </x-tour-popup>
+
     {{-- Pause Timer FAB --}}
     <div
         x-data="{
