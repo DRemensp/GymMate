@@ -1,4 +1,4 @@
-const CACHE = 'gymmate-v3';
+const CACHE = 'gymmate-v4';
 
 const PRECACHE = [
     '/offline',
@@ -26,10 +26,17 @@ self.addEventListener('fetch', e => {
 
     const url = new URL(e.request.url);
 
-    // Externe Ressourcen (Fonts, CDN) → direkt, kein SW-Overhead
+    // Externe Ressourcen (Fonts, CDN) → kein SW-Overhead
     if (url.origin !== self.location.origin) return;
 
-    // Statische Assets → Cache First (kein Netzwerk nötig wenn cached)
+    // Livewire / Sync / Ping → nie cachen
+    if (
+        url.pathname.startsWith('/livewire') ||
+        url.pathname === '/sync' ||
+        url.pathname === '/ping'
+    ) return;
+
+    // Statische Assets (JS, CSS, Icons) → Cache First (instant)
     if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/icons/')) {
         e.respondWith(
             caches.match(e.request).then(cached =>
@@ -43,21 +50,20 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Livewire / API-Requests → kein Caching
-    if (url.pathname.startsWith('/livewire') || url.pathname === '/sync') return;
-
-    // Seiten → Stale-While-Revalidate: sofort aus Cache, im Hintergrund aktualisieren
+    // Seiten → Network First, Cache nur als Offline-Fallback
     e.respondWith(
-        caches.open(CACHE).then(async cache => {
-            const cached = await cache.match(e.request);
-
-            const networkFetch = fetch(e.request).then(res => {
-                if (res.ok) cache.put(e.request, res.clone());
+        fetch(e.request)
+            .then(res => {
+                if (res.ok) {
+                    const clone = res.clone();
+                    caches.open(CACHE).then(c => c.put(e.request, clone));
+                }
                 return res;
-            }).catch(() => cached ?? caches.match('/offline'));
-
-            // Wenn gecacht → sofort zurückgeben, Netzwerk-Update im Hintergrund
-            return cached ?? networkFetch;
-        })
+            })
+            .catch(() =>
+                caches.match(e.request).then(cached =>
+                    cached ?? caches.match('/offline')
+                )
+            )
     );
 });
