@@ -85,9 +85,12 @@
         </div>
     </div>
 
-    <x-tour-popup storageKey="gymmate-tour-logging" icon="📊" title="Training eintragen">
+    @auth
+    @php $tour = auth()->user()->getOrCreateTour(); @endphp
+    <x-tour-popup step="logging" :show="!$tour->logging" icon="📊" title="Training eintragen">
         Trage nach dem Training Gewicht, Wiederholungen und Sätze ein. Vergangene Einträge kannst du jederzeit bearbeiten oder löschen.
     </x-tour-popup>
+    @endauth
 
     {{-- Pause Timer FAB --}}
     <div

@@ -178,10 +178,11 @@
         </div>
     </div>
 
-    @if($locations->isEmpty())
-    <x-tour-popup storageKey="gymmate-tour-locations" icon="🏋️" title="Erstelle deinen ersten Standort">
-        Tippe auf <strong class="text-zinc-700 dark:text-zinc-300">+ Standort</strong>, gib deinem Gym einen Namen und leg los. Für jeden Standort werden automatisch 5 Trainingspläne angelegt: Schulter, Arme, Rücken, Brust und Beine.
+    @auth
+    @php $tour = auth()->user()->getOrCreateTour(); @endphp
+    <x-tour-popup step="locations" :show="!$tour->locations" icon="🏋️" title="Erstelle deinen ersten Standort">
+        Tippe auf <strong class="text-zinc-700 dark:text-zinc-300">+ Standort</strong> und gib deinem Gym einen Namen. Für jeden Standort werden automatisch 5 Trainingspläne angelegt: Schulter, Arme, Rücken, Brust und Beine.
     </x-tour-popup>
-    @endif
+    @endauth
 
 </x-layouts.sidebar>

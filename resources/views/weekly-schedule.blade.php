@@ -119,8 +119,11 @@
         </div>
     </div>
 
-    <x-tour-popup storageKey="gymmate-tour-weekly" icon="📅" title="Deine Trainingswoche">
+    @auth
+    @php $tour = auth()->user()->getOrCreateTour(); @endphp
+    <x-tour-popup step="weekly" :show="!$tour->weekly" icon="📅" title="Deine Trainingswoche">
         Weise jedem Wochentag einen Trainingsplan zu oder markiere ihn als Ruhetag. Am besten erst den Wochenplan festlegen, wenn du alle Übungen eingetragen hast.
     </x-tour-popup>
+    @endauth
 
 </x-layouts.sidebar>

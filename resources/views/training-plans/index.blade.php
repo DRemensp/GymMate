@@ -1,6 +1,6 @@
 <x-layouts.sidebar>
 
-    <div class="min-h-screen px-6 pt-8 pb-10" x-data="{ editMode: false, tourStep: localStorage.getItem('gymmate-tour-plans') ? 0 : 1 }">
+    <div class="min-h-screen px-6 pt-8 pb-10" x-data="{ editMode: false }">
         <div class="max-w-6xl mx-auto">
 
             <div class="mb-8 sm:pl-14 flex items-center justify-between gap-3">
@@ -236,55 +236,11 @@
         </div>
     </div>
 
-    {{-- Onboarding Tour: Steps 2+3 --}}
-    <div x-show="tourStep > 0" x-cloak
-         class="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0">
-        <div x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="translate-y-full opacity-0"
-             x-transition:enter-end="translate-y-0 opacity-100"
-             class="bg-white dark:bg-zinc-900 rounded-[22px] p-6 w-full max-w-sm shadow-2xl border border-zinc-200 dark:border-zinc-800">
-
-            <template x-if="tourStep === 1">
-                <div>
-                    <div class="text-3xl">📋</div>
-                    <h3 class="text-[17px] font-semibold text-zinc-900 dark:text-white mt-3 mb-2">Deine vorgefertigten Pläne</h3>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">Für jeden Standort wurden automatisch 5 Muskelgruppen angelegt: Schulter, Arme, Rücken, Brust und Beine. Tippe auf einen Plan, um Übungen hinzuzufügen.</p>
-                    <div class="flex gap-1.5 justify-center mt-4 mb-1">
-                        <div class="w-2 h-2 rounded-full bg-orange-500"></div>
-                        <div class="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-700"></div>
-                    </div>
-                    <button @click="tourStep = 2"
-                            class="w-full mt-4 px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
-                        Weiter
-                    </button>
-                    <button @click="['gymmate-tour-locations','gymmate-tour-plans','gymmate-tour-exercises','gymmate-tour-logging','gymmate-tour-weekly'].forEach(k => localStorage.setItem(k,'1')); tourStep = 0"
-                            class="w-full mt-3 text-sm text-zinc-400 hover:text-zinc-600 transition-colors text-center">
-                        Tour überspringen
-                    </button>
-                </div>
-            </template>
-
-            <template x-if="tourStep === 2">
-                <div>
-                    <div class="text-3xl">✏️</div>
-                    <h3 class="text-[17px] font-semibold text-zinc-900 dark:text-white mt-3 mb-2">Bearbeiten & Löschen</h3>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">Mit dem <strong class="text-zinc-700 dark:text-zinc-300">Bearbeiten</strong>-Button oben rechts kannst du Standorte, Pläne und Übungen umbenennen oder löschen.</p>
-                    <div class="flex gap-1.5 justify-center mt-4 mb-1">
-                        <div class="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-700"></div>
-                        <div class="w-2 h-2 rounded-full bg-orange-500"></div>
-                    </div>
-                    <button @click="localStorage.setItem('gymmate-tour-plans','1'); tourStep = 0"
-                            class="w-full mt-4 px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
-                        Verstanden
-                    </button>
-                    <button @click="['gymmate-tour-locations','gymmate-tour-plans','gymmate-tour-exercises','gymmate-tour-logging','gymmate-tour-weekly'].forEach(k => localStorage.setItem(k,'1')); tourStep = 0"
-                            class="w-full mt-3 text-sm text-zinc-400 hover:text-zinc-600 transition-colors text-center">
-                        Tour überspringen
-                    </button>
-                </div>
-            </template>
-
-        </div>
-    </div>
+    @auth
+    @php $tour = auth()->user()->getOrCreateTour(); @endphp
+    <x-tour-popup step="plans" :show="!$tour->plans" icon="📋" title="Deine vorgefertigten Pläne">
+        Für jeden Standort wurden automatisch 5 Muskelgruppen angelegt: Schulter, Arme, Rücken, Brust und Beine. Tippe auf einen Plan um Übungen hinzuzufügen — und nutze den <strong class="text-zinc-700 dark:text-zinc-300">Bearbeiten</strong>-Button oben rechts zum Umbenennen oder Löschen.
+    </x-tour-popup>
+    @endauth
 
 </x-layouts.sidebar>

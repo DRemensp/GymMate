@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
@@ -108,5 +109,15 @@ class User extends Authenticatable implements HasMedia
     public function locations(): HasMany
     {
         return $this->hasMany(Location::class);
+    }
+
+    public function tour(): HasOne
+    {
+        return $this->hasOne(Tour::class);
+    }
+
+    public function getOrCreateTour(): Tour
+    {
+        return $this->tour ?? $this->tour()->create([]);
     }
 }

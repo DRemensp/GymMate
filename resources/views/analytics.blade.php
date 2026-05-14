@@ -322,4 +322,11 @@
     </script>
     @endpush
 
+    @auth
+    @php $tour = auth()->user()->getOrCreateTour(); @endphp
+    <x-tour-popup step="analyse" :show="!$tour->analyse" icon="📈" title="Deine Analyse">
+        Hier siehst du deinen Gewichtsverlauf, Gesamtvolumen pro Woche oder Monat, deine Trainings-Streak und deinen Lieblingsstandort — alles auf einen Blick.
+    </x-tour-popup>
+    @endauth
+
 </x-layouts.sidebar>

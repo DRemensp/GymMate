@@ -10,11 +10,14 @@ use App\Http\Controllers\FollowingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\TrainingPlanController;
+use App\Http\Controllers\TourController;
 use App\Http\Controllers\WeeklyScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 });
 
 Route::get('/u/{name}', [PublicProfileController::class, 'show'])->name('profile.public');
@@ -63,6 +66,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/cardio', [CardioController::class, 'index'])->name('cardio');
     Route::delete('/cardio/{cardioSession}', [CardioController::class, 'destroy'])->name('cardio.destroy');
+
+    Route::post('/tour/skip',     [TourController::class, 'skip'])->name('tour.skip');
+    Route::post('/tour/reset',    [TourController::class, 'reset'])->name('tour.reset');
+    Route::post('/tour/{step}',   [TourController::class, 'complete'])->name('tour.complete');
 
     Route::get('/data',                 [DataPortabilityController::class, 'index'])->name('data');
     Route::get('/data/export/workouts', [DataPortabilityController::class, 'exportWorkouts'])->name('data.export.workouts');

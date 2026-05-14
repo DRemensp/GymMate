@@ -7,6 +7,14 @@
 
         <title>{{ isset($title) ? $title . ' – GymMate' : config('app.name', 'GymMate') }}</title>
 
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#f97316">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="GymMate">
+        <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet"/>
 
@@ -38,5 +46,10 @@
 
         @livewireScripts
         @stack('scripts')
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js');
+            }
+        </script>
     </body>
 </html>

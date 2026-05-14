@@ -158,4 +158,12 @@
     </script>
     @endif
     @endpush
+
+    @auth
+    @php $tour = auth()->user()->getOrCreateTour(); @endphp
+    <x-tour-popup step="cardio" :show="!$tour->cardio" icon="🏃" title="Cardio tracken">
+        Trage hier deine Cardio-Einheiten ein: Aktivität, Dauer und optional verbrannte Kalorien. Dein Verlauf wird als Chart dargestellt.
+    </x-tour-popup>
+    @endauth
+
 </x-layouts.sidebar>
