@@ -9,6 +9,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\FollowingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
+use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TrainingPlanController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\WeeklyScheduleController;
@@ -19,6 +20,8 @@ Route::get('/', function () {
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
+
+Route::get('/offline', fn() => view('offline'))->name('offline');
 
 Route::get('/u/{name}', [PublicProfileController::class, 'show'])->name('profile.public');
 
@@ -76,6 +79,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/data/export/cardio',   [DataPortabilityController::class, 'exportCardio'])->name('data.export.cardio');
     Route::post('/data/import/workouts',[DataPortabilityController::class, 'importWorkouts'])->name('data.import.workouts');
     Route::post('/data/import/cardio',  [DataPortabilityController::class, 'importCardio'])->name('data.import.cardio');
+
+    Route::post('/sync', [SyncController::class, 'handle'])->name('sync');
 
 });
 

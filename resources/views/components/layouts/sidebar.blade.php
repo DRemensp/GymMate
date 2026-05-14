@@ -51,5 +51,71 @@
                 navigator.serviceWorker.register('/sw.js');
             }
         </script>
+
+        {{-- Offline-Banner + Toast --}}
+        <div
+            x-data="{
+                online: navigator.onLine,
+                toasts: [],
+                pendingCount: 0,
+                addToast(msg, type) {
+                    const id = Date.now();
+                    this.toasts.push({ id, msg, type });
+                    setTimeout(() => { this.toasts = this.toasts.filter(t => t.id !== id); }, 4000);
+                },
+                init() {
+                    window.addEventListener('online',  () => { this.online = true; });
+                    window.addEventListener('offline', () => { this.online = false; });
+                    window.addEventListener('offline-toast', e => {
+                        this.addToast(e.detail.message, e.detail.type);
+                    });
+                    window.addEventListener('offline-queue-count', e => {
+                        this.pendingCount = e.detail.count;
+                    });
+                }
+            }"
+            x-init="init()"
+            id="offline-system"
+        >
+            {{-- Offline-Banner --}}
+            <div
+                x-show="!online"
+                x-transition
+                class="fixed top-0 left-0 right-0 z-[100] bg-orange-500 text-white text-center text-xs py-2 px-4 font-medium"
+                style="display:none"
+            >
+                Offline – Änderungen werden lokal gespeichert und automatisch synchronisiert
+            </div>
+
+            {{-- Pending Badge (global, kleine Pille oben rechts) --}}
+            <div
+                x-show="pendingCount > 0"
+                x-transition
+                class="fixed top-3 right-3 z-[99] bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-lg"
+                style="display:none"
+                x-text="pendingCount + ' ausstehend'"
+            ></div>
+
+            {{-- Toast-Container --}}
+            <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2 pointer-events-none" style="min-width:280px;max-width:90vw">
+                <template x-for="toast in toasts" :key="toast.id">
+                    <div
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-y-4"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        :class="{
+                            'bg-green-600': toast.type === 'success',
+                            'bg-orange-500': toast.type === 'offline',
+                            'bg-yellow-500': toast.type === 'conflict'
+                        }"
+                        class="text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-xl text-center pointer-events-auto"
+                        x-text="toast.msg"
+                    ></div>
+                </template>
+            </div>
+        </div>
     </body>
 </html>

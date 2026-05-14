@@ -1,13 +1,13 @@
-const CACHE = 'gymmate-v1';
+const CACHE = 'gymmate-v2';
 
-const STATIC = [
-    '/',
+const PRECACHE = [
+    '/offline',
     '/manifest.json',
 ];
 
 self.addEventListener('install', e => {
     e.waitUntil(
-        caches.open(CACHE).then(c => c.addAll(STATIC))
+        caches.open(CACHE).then(c => c.addAll(PRECACHE))
     );
     self.skipWaiting();
 });
@@ -26,7 +26,7 @@ self.addEventListener('fetch', e => {
 
     const url = new URL(e.request.url);
 
-    // Statische Assets (JS, CSS, Bilder) → Cache First
+    // Statische Assets → Cache First
     if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/icons/')) {
         e.respondWith(
             caches.match(e.request).then(cached =>
@@ -40,14 +40,20 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Seiten → Network First, Fallback auf Cache
+    // Seiten → Network First, Cache falls offline
     e.respondWith(
         fetch(e.request)
             .then(res => {
-                const clone = res.clone();
-                caches.open(CACHE).then(c => c.put(e.request, clone));
+                if (res.ok) {
+                    const clone = res.clone();
+                    caches.open(CACHE).then(c => c.put(e.request, clone));
+                }
                 return res;
             })
-            .catch(() => caches.match(e.request))
+            .catch(() =>
+                caches.match(e.request).then(cached =>
+                    cached ?? caches.match('/offline')
+                )
+            )
     );
 });

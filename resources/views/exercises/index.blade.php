@@ -92,12 +92,21 @@
                                             class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                                             Abbrechen
                                         </button>
-                                        <form method="POST" action="{{ route('exercises.destroy', $exercise) }}" class="flex-1">
+                                        <form method="POST" action="{{ route('exercises.destroy', $exercise) }}" class="flex-1" x-ref="deleteForm{{ $exercise->id }}">
                                             @csrf @method('DELETE')
-                                            <button type="submit"
+                                            <button type="button"
                                                 :disabled="confirmation !== 'löschen'"
                                                 :class="confirmation === 'löschen' ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 cursor-not-allowed'"
-                                                class="w-full px-4 py-2.5 rounded-xl font-semibold transition-colors">
+                                                class="w-full px-4 py-2.5 rounded-xl font-semibold transition-colors"
+                                                @click="
+                                                    if (confirmation !== 'löschen') return;
+                                                    if (!navigator.onLine) {
+                                                        window.OfflineQueue.enqueue('delete_exercise', { exercise_id: {{ $exercise->id }} });
+                                                        open = false; confirmation = '';
+                                                    } else {
+                                                        $el.closest('form').submit();
+                                                    }
+                                                ">
                                                 Löschen
                                             </button>
                                         </form>

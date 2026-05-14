@@ -103,9 +103,18 @@
                                     </div>
                                 </div>
                                 {{-- Rechts: Löschen --}}
-                                <form method="POST" action="{{ route('cardio.destroy', $session) }}" class="shrink-0">
+                                <form method="POST" action="{{ route('cardio.destroy', $session) }}" class="shrink-0" x-data>
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="p-2 text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors">
+                                    <button type="button"
+                                        class="p-2 text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors"
+                                        @click="
+                                            if (!navigator.onLine) {
+                                                window.OfflineQueue.enqueue('delete_cardio', { cardio_id: {{ $session->id }} });
+                                                $el.closest('.flex').remove();
+                                            } else {
+                                                $el.closest('form').submit();
+                                            }
+                                        ">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>

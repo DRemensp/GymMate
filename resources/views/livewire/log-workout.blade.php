@@ -119,10 +119,24 @@
                 @error('loggedAt') <p class="text-red-400 text-xs mb-2">{{ $message }}</p> @enderror
             </div>
 
-            <button type="submit"
-                class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
-                Speichern
-            </button>
+            <div x-data>
+                <button type="button"
+                    @click="
+                        if (!navigator.onLine) {
+                            window.OfflineQueue.enqueue('log_workout', {
+                                exercise_id: {{ $exercise->id }},
+                                is_unilateral: {{ $exercise->is_unilateral ? 'true' : 'false' }},
+                                sets: $wire.sets,
+                                logged_at: $wire.loggedAt,
+                            });
+                        } else {
+                            $wire.save();
+                        }
+                    "
+                    class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
+                    Speichern
+                </button>
+            </div>
         </form>
     </div>
 </div>
