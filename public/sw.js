@@ -1,4 +1,4 @@
-const CACHE = 'gymmate-v2';
+const CACHE = 'gymmate-v3';
 
 const PRECACHE = [
     '/offline',
@@ -26,7 +26,10 @@ self.addEventListener('fetch', e => {
 
     const url = new URL(e.request.url);
 
-    // Statische Assets → Cache First
+    // Externe Ressourcen (Fonts, CDN) → direkt, kein SW-Overhead
+    if (url.origin !== self.location.origin) return;
+
+    // Statische Assets → Cache First (kein Netzwerk nötig wenn cached)
     if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/icons/')) {
         e.respondWith(
             caches.match(e.request).then(cached =>
@@ -40,20 +43,21 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    // Seiten → Network First, Cache falls offline
+    // Livewire / API-Requests → kein Caching
+    if (url.pathname.startsWith('/livewire') || url.pathname === '/sync') return;
+
+    // Seiten → Stale-While-Revalidate: sofort aus Cache, im Hintergrund aktualisieren
     e.respondWith(
-        fetch(e.request)
-            .then(res => {
-                if (res.ok) {
-                    const clone = res.clone();
-                    caches.open(CACHE).then(c => c.put(e.request, clone));
-                }
+        caches.open(CACHE).then(async cache => {
+            const cached = await cache.match(e.request);
+
+            const networkFetch = fetch(e.request).then(res => {
+                if (res.ok) cache.put(e.request, res.clone());
                 return res;
-            })
-            .catch(() =>
-                caches.match(e.request).then(cached =>
-                    cached ?? caches.match('/offline')
-                )
-            )
+            }).catch(() => cached ?? caches.match('/offline'));
+
+            // Wenn gecacht → sofort zurückgeben, Netzwerk-Update im Hintergrund
+            return cached ?? networkFetch;
+        })
     );
 });

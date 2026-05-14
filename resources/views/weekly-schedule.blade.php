@@ -109,31 +109,29 @@
                         </div>
                     </div>
 
-                    <div x-data>
-                        <button type="button"
-                            @click="
-                                if (!navigator.onLine) {
-                                    const form = $el.closest('form');
-                                    const fd = new FormData(form);
-                                    const days = {};
-                                    for (const [key, val] of fd.entries()) {
-                                        const m = key.match(/^days\[(\d+)\]\[(\w+)\](?:\[\])?$/);
-                                        if (!m) continue;
-                                        const [, dow, field] = m;
-                                        if (!days[dow]) days[dow] = { is_rest: false, exercises: [] };
-                                        if (field === 'is_rest') days[dow].is_rest = true;
-                                        if (field === 'exercises') days[dow].exercises.push(parseInt(val));
-                                    }
-                                    const targetReps = fd.get('target_reps');
-                                    window.OfflineQueue.enqueue('update_schedule', { days, target_reps: targetReps ? parseInt(targetReps) : null });
-                                } else {
-                                    $el.closest('form').submit();
+                    <button type="button"
+                        @click="window.OfflineQueue.isOffline().then(offline => {
+                            if (offline) {
+                                const form = $el.closest('form');
+                                const fd = new FormData(form);
+                                const days = {};
+                                for (const [key, val] of fd.entries()) {
+                                    const m = key.match(/^days\[(\d+)\]\[(\w+)\](?:\[\])?$/);
+                                    if (!m) continue;
+                                    const [, dow, field] = m;
+                                    if (!days[dow]) days[dow] = { is_rest: false, exercises: [] };
+                                    if (field === 'is_rest') days[dow].is_rest = true;
+                                    if (field === 'exercises') days[dow].exercises.push(parseInt(val));
                                 }
-                            "
-                            class="w-full py-2.5 mt-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
-                            Speichern
-                        </button>
-                    </div>
+                                const targetReps = fd.get('target_reps');
+                                window.OfflineQueue.enqueue('update_schedule', { days, target_reps: targetReps ? parseInt(targetReps) : null });
+                            } else {
+                                $el.closest('form').submit();
+                            }
+                        })"
+                        class="w-full py-2.5 mt-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
+                        Speichern
+                    </button>
                 </form>
             </div>
 

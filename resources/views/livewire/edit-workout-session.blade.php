@@ -14,15 +14,14 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button"
-                        x-data
-                        @click="
-                            if (!navigator.onLine) {
+                        @click="window.OfflineQueue.isOffline().then(offline => {
+                            if (offline) {
                                 window.OfflineQueue.enqueue('delete_workout', { session_id: $wire.sessionId });
                                 $wire.set('open', false);
                             } else if (confirm('Session wirklich löschen?')) {
                                 $wire.delete();
                             }
-                        "
+                        })"
                         class="p-1.5 rounded-lg text-zinc-400 dark:text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                         title="Einheit löschen">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -43,7 +43,7 @@ async function dbDelete(id) {
 }
 
 function uuid() {
-    return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now();
+    return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
 function toast(message, type = 'success') {
@@ -53,14 +53,33 @@ function toast(message, type = 'success') {
 function updateBadge() {
     getPendingCount().then(count => {
         window.dispatchEvent(new CustomEvent('offline-queue-count', { detail: { count } }));
-    });
+    }).catch(() => {});
+}
+
+// Echte Verbindungs-Prüfung: navigator.onLine ist manchmal falsch (WiFi ohne Internet)
+async function isOffline() {
+    if (!navigator.onLine) return true;
+    try {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 2000);
+        const res = await fetch('/ping', { method: 'HEAD', signal: ctrl.signal, cache: 'no-store' });
+        clearTimeout(timeout);
+        return !res.ok;
+    } catch {
+        return true;
+    }
 }
 
 async function enqueue(type, payload) {
     const item = { id: uuid(), type, payload, queued_at: new Date().toISOString(), retries: 0 };
-    await dbPut(item);
-    updateBadge();
-    toast('Offline gespeichert – wird synchronisiert sobald du wieder online bist', 'offline');
+    try {
+        await dbPut(item);
+        updateBadge();
+        toast('Offline gespeichert – wird synchronisiert sobald du wieder online bist', 'offline');
+    } catch (err) {
+        console.error('[OfflineQueue] enqueue failed:', err);
+        toast('Fehler beim lokalen Speichern. Versuche es erneut.', 'conflict');
+    }
 }
 
 async function getPendingCount() {
@@ -71,17 +90,24 @@ async function getPendingCount() {
 let syncing = false;
 
 async function sync() {
-    if (syncing || !navigator.onLine) return;
+    if (syncing) return;
+    if (await isOffline()) return;
     syncing = true;
 
-    const items = await dbAll();
+    let items;
+    try {
+        items = await dbAll();
+    } catch {
+        syncing = false;
+        return;
+    }
+
     if (!items.length) {
         syncing = false;
         return;
     }
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-
     let anySuccess = false;
     let anyConflict = false;
 
@@ -115,7 +141,7 @@ async function sync() {
                 }
             }
         } catch {
-            // network failure during sync attempt — leave in queue
+            // Netzwerkfehler während Sync — bleibt in Queue
         }
     }
 
@@ -125,20 +151,17 @@ async function sync() {
     if (anyConflict) {
         toast('Konflikt erkannt: Eine neuere Version wurde von einem anderen Gerät gespeichert', 'conflict');
     } else if (anySuccess) {
-        toast('Synchronisiert', 'success');
-        // Soft page reload to reflect synced data
+        toast('Synchronisiert ✓', 'success');
         setTimeout(() => window.location.reload(), 1200);
     }
 }
 
 window.addEventListener('online', sync);
 
-// Sync pending items on startup
-if (navigator.onLine) {
-    setTimeout(sync, 1000);
-}
+// Sync beim Start
+if (navigator.onLine) setTimeout(sync, 1000);
 
-// Initial badge update
+// Badge beim Start
 updateBadge();
 
-window.OfflineQueue = { enqueue, sync, getPendingCount };
+window.OfflineQueue = { enqueue, sync, getPendingCount, isOffline };

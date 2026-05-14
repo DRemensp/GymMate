@@ -159,15 +159,14 @@
                                             :disabled="confirmation !== 'löschen'"
                                             :class="confirmation === 'löschen' ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 cursor-not-allowed'"
                                             class="w-full px-4 py-2.5 rounded-xl font-semibold transition-colors"
-                                            @click="
-                                                if (confirmation !== 'löschen') return;
-                                                if (!navigator.onLine) {
+                                            @click="if (confirmation !== 'löschen') return; window.OfflineQueue.isOffline().then(offline => {
+                                                if (offline) {
                                                     window.OfflineQueue.enqueue('delete_location', { location_id: {{ $location->id }} });
                                                     open = false; confirmation = '';
                                                 } else {
                                                     $el.closest('form').submit();
                                                 }
-                                            ">
+                                            })">
                                             Löschen
                                         </button>
                                     </form>

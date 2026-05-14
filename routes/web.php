@@ -22,6 +22,7 @@ Route::get('/', function () {
 });
 
 Route::get('/offline', fn() => view('offline'))->name('offline');
+Route::get('/ping', fn() => response('', 204));
 
 Route::get('/u/{name}', [PublicProfileController::class, 'show'])->name('profile.public');
 

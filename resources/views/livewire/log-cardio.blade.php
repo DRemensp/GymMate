@@ -96,28 +96,26 @@
             @error('loggedAt') <p class="text-red-400 text-xs mt-0.5">{{ $message }}</p> @enderror
         </div>
 
-        <div x-data>
-            <button type="button"
-                @click="
-                    if (!navigator.onLine) {
-                        window.OfflineQueue.enqueue('log_cardio', {
-                            activity:          $wire.activity,
-                            duration_minutes:  $wire.duration,
-                            distance_km:       $wire.distance || null,
-                            intensity:         $wire.intensity,
-                            hiit_rounds:       $wire.hiitRounds || null,
-                            hiit_work_seconds: $wire.hiitWork || null,
-                            hiit_rest_seconds: $wire.hiitRest || null,
-                            notes:             $wire.notes || null,
-                            logged_at:         $wire.loggedAt,
-                        });
-                    } else {
-                        $wire.save();
-                    }
-                "
-                class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
-                Speichern
-            </button>
-        </div>
+        <button type="button"
+            @click="window.OfflineQueue.isOffline().then(offline => {
+                if (offline) {
+                    window.OfflineQueue.enqueue('log_cardio', {
+                        activity:          $wire.activity,
+                        duration_minutes:  $wire.duration,
+                        distance_km:       $wire.distance || null,
+                        intensity:         $wire.intensity,
+                        hiit_rounds:       $wire.hiitRounds || null,
+                        hiit_work_seconds: $wire.hiitWork || null,
+                        hiit_rest_seconds: $wire.hiitRest || null,
+                        notes:             $wire.notes || null,
+                        logged_at:         $wire.loggedAt,
+                    });
+                } else {
+                    $wire.save();
+                }
+            })"
+            class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
+            Speichern
+        </button>
     </form>
 </div>

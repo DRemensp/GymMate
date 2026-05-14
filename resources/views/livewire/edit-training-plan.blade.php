@@ -23,14 +23,14 @@
                     @endif
                 </div>
 
-                <div class="flex gap-3 pt-2" x-data>
+                <div class="flex gap-3 pt-2">
                     <button type="button" wire:click="$set('open', false)"
                         class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                         Abbrechen
                     </button>
                     <button type="button"
-                        @click="
-                            if (!navigator.onLine) {
+                        @click="window.OfflineQueue.isOffline().then(offline => {
+                            if (offline) {
                                 window.OfflineQueue.enqueue('update_plan', {
                                     plan_id: $wire.planId,
                                     name:    $wire.name,
@@ -39,7 +39,7 @@
                             } else {
                                 $wire.save();
                             }
-                        "
+                        })"
                         class="flex-1 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-colors">
                         Speichern
                     </button>
