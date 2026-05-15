@@ -9,6 +9,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\FollowingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
+use App\Http\Controllers\PrefetchController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TrainingPlanController;
 use App\Http\Controllers\TourController;
@@ -82,6 +83,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/data/import/cardio',  [DataPortabilityController::class, 'importCardio'])->name('data.import.cardio');
 
     Route::post('/sync', [SyncController::class, 'handle'])->name('sync');
+
+    Route::get('/prefetch-urls', [PrefetchController::class, 'urls'])->name('prefetch.urls');
 
 });
 

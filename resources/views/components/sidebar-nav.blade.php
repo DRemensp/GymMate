@@ -112,6 +112,18 @@
             <span class="text-xs text-zinc-400 dark:text-zinc-500">Dunkel</span>
         </div>
 
+        {{-- Offline cachen --}}
+        @auth
+        <button type="button" id="prefetch-btn" onclick="prefetchAll()"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors text-left">
+            <svg id="prefetch-icon" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+            </svg>
+            <span id="prefetch-label">Offline vorbereiten</span>
+        </button>
+        @endauth
+
         <form method="POST" action="{{ route('tour.reset') }}">
             @csrf
             <button type="submit"
@@ -248,4 +260,55 @@
     }, { passive: true });
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+    // ── Offline prefetch ───────────────────────────────────────
+    async function prefetchAll() {
+        const btn   = document.getElementById('prefetch-btn');
+        const icon  = document.getElementById('prefetch-icon');
+        const label = document.getElementById('prefetch-label');
+
+        btn.disabled = true;
+
+        // Spinner
+        icon.innerHTML = `<circle cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="28 56" class="animate-spin origin-center" style="animation:spin 1s linear infinite"/>`;
+        label.textContent = 'Lade URLs…';
+
+        let urls;
+        try {
+            const res = await fetch('{{ route('prefetch.urls') }}', { credentials: 'include' });
+            urls = await res.json();
+        } catch {
+            label.textContent = 'Fehler – bitte online';
+            btn.disabled = false;
+            return;
+        }
+
+        let done = 0;
+        const total = urls.length;
+        label.textContent = `0 / ${total}`;
+
+        // 4 parallel fetches at a time so we don't flood the server
+        const queue = [...urls];
+        async function worker() {
+            while (queue.length) {
+                const url = queue.shift();
+                try { await fetch(url, { credentials: 'include' }); } catch {}
+                done++;
+                label.textContent = `${done} / ${total}`;
+            }
+        }
+        await Promise.all([worker(), worker(), worker(), worker()]);
+
+        // Checkmark
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5"/>`;
+        icon.classList.add('text-green-500');
+        label.textContent = 'Bereit für Offline';
+
+        setTimeout(() => {
+            icon.classList.remove('text-green-500');
+            icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>`;
+            label.textContent = 'Offline vorbereiten';
+            btn.disabled = false;
+        }, 3000);
+    }
 </script>
