@@ -28,6 +28,7 @@ class User extends Authenticatable implements HasMedia
         'email',
         'password',
         'target_reps',
+        'prime_time',
         'weight_kg',
         'height_cm',
         'gender',

@@ -116,15 +116,22 @@
                 </div>
                 @endif
 
-                <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[18px] p-4">
-                    <div class="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.08em] mb-1">Lieblingsübung</div>
-                    @if($favoriteExercise && $favoriteExercise['name'])
-                        <div class="text-[14px] font-semibold text-zinc-900 dark:text-white leading-tight">{{ $favoriteExercise['name'] }}</div>
-                        <div class="text-[11px] text-zinc-400 mt-0.5">{{ $favoriteExercise['count'] }}× trainiert</div>
-                    @else
-                        <div class="text-[22px] font-medium text-zinc-300 dark:text-zinc-700 leading-none">–</div>
-                    @endif
+@if($user->prime_time)
+                @php
+                    $primeRanges = [
+                        'Morgen'     => '05–09 Uhr',
+                        'Vormittag'  => '10–13 Uhr',
+                        'Nachmittag' => '14–17 Uhr',
+                        'Abend'      => '18–21 Uhr',
+                        'Nacht'      => '22–04 Uhr',
+                    ];
+                @endphp
+                <div class="bg-orange-500/5 border border-orange-500/20 rounded-[18px] p-4 col-span-2">
+                    <div class="font-mono text-[10px] text-orange-400/70 uppercase tracking-[0.08em] mb-1">PrimeTime</div>
+                    <div class="text-[18px] font-semibold text-orange-500 leading-tight">{{ $user->prime_time }}</div>
+                    <div class="text-[11px] text-orange-400/60 mt-0.5">{{ $primeRanges[$user->prime_time] ?? '' }}</div>
                 </div>
+                @endif
             </div>
 
             {{-- Aktivität + Letztes Training nebeneinander --}}

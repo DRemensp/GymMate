@@ -41,6 +41,50 @@
                     </div>
                 </div>
 
+                {{-- PrimeTime --}}
+                @if($primeTime)
+                <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl shadow-sm p-6">
+                    <div class="flex items-start justify-between mb-1">
+                        <h2 class="text-zinc-900 dark:text-white font-semibold">PrimeTime</h2>
+                        <span class="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">Progression herausgerechnet</span>
+                    </div>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-5">
+                        Du performst am besten:
+                        <span class="text-orange-500 font-semibold">{{ $primeTime['best'] }}</span>
+                        <span class="text-zinc-400">({{ $primeTime['best_range'] }})</span>
+                        @if($primeTime['best_delta'] > 0)
+                            <span class="text-green-500 font-medium">+{{ $primeTime['best_delta'] }}%</span>
+                        @else
+                            <span class="text-zinc-400">{{ $primeTime['best_delta'] }}%</span>
+                        @endif
+                        <span class="text-zinc-400 text-xs">über Trend</span>
+                    </p>
+
+                    <div class="space-y-2.5">
+                        @foreach($primeTime['buckets'] as $name => $stats)
+                        <div class="flex items-center gap-3">
+                            <span class="w-24 text-xs font-medium shrink-0
+                                {{ $name === $primeTime['best'] ? 'text-orange-500' : 'text-zinc-500 dark:text-zinc-400' }}">
+                                {{ $name }}
+                            </span>
+                            <div class="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all
+                                    {{ $name === $primeTime['best'] ? 'bg-orange-500' : 'bg-zinc-300 dark:bg-zinc-600' }}"
+                                    style="width: {{ $stats['bar_pct'] }}%"></div>
+                            </div>
+                            <span class="w-14 text-right text-xs shrink-0
+                                {{ $stats['avg_delta'] > 0 ? 'text-green-500' : 'text-zinc-400 dark:text-zinc-500' }}">
+                                {{ $stats['avg_delta'] > 0 ? '+' : '' }}{{ $stats['avg_delta'] }}%
+                            </span>
+                            <span class="w-16 text-right text-xs text-zinc-400 dark:text-zinc-600 shrink-0">
+                                {{ $stats['sessions'] }}× Sess.
+                            </span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 {{-- Weekly Volume Chart --}}
                 <div class="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl shadow-sm p-6">
                     <h2 class="text-zinc-900 dark:text-white font-semibold mb-4">Weekly Volume <span class="text-zinc-500 text-sm font-normal">(last 16 weeks, kg)</span></h2>
