@@ -9,20 +9,20 @@
                 <div>
                     <label class="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">Name</label>
                     <input wire:model="name" type="text" placeholder="z.B. Bankdrücken"
-                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"/>
+                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-accent-500 transition-colors"/>
                     @error('name') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">Beschreibung <span class="text-zinc-400 dark:text-zinc-600">(optional)</span></label>
                     <textarea wire:model="description" rows="2" placeholder="z.B. Griffbreite, Hinweise..."
-                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors resize-none"></textarea>
+                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-accent-500 transition-colors resize-none"></textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">Ausführung</label>
                     <select wire:model="is_unilateral"
-                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white focus:outline-none focus:border-orange-500 transition-colors">
+                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white focus:outline-none focus:border-accent-500 transition-colors">
                         <option value="0">Beidhändig</option>
                         <option value="1">Einhändig (Links &amp; Rechts)</option>
                     </select>
@@ -31,7 +31,7 @@
                 <div>
                     <label class="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">Bild ersetzen <span class="text-zinc-400 dark:text-zinc-600">(optional)</span></label>
                     <input wire:model="image" type="file" accept="image/*"
-                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-500 dark:text-zinc-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-orange-500 file:text-white file:text-sm cursor-pointer"/>
+                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-500 dark:text-zinc-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-accent-500 file:text-white file:text-sm cursor-pointer"/>
                     @error('image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     @if($image)
                         <img src="{{ $image->temporaryUrl() }}" class="mt-2 h-24 w-full object-cover rounded-xl"/>
@@ -57,7 +57,7 @@
                                 $wire.save();
                             }
                         })"
-                        class="flex-1 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-colors">
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors">
                         Speichern
                     </button>
                 </div>

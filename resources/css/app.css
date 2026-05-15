@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --accent-100: 255 237 213;
+    --accent-400: 251 146 60;
+    --accent-500: 249 115 22;
+    --accent-600: 234 88 12;
+    --accent-hex: #f97316;
+}
+
 @layer utilities {
     .scrollbar-none {
         -ms-overflow-style: none;

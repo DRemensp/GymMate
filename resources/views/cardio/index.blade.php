@@ -14,7 +14,7 @@
                 {{-- Stats --}}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div class="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-700 rounded-2xl p-4 text-center">
-                        <p class="text-2xl font-bold text-orange-500">{{ $weeklyMinutes }}</p>
+                        <p class="text-2xl font-bold text-accent-500">{{ $weeklyMinutes }}</p>
                         <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">Min diese Woche</p>
                     </div>
                     <div class="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-700 rounded-2xl p-4 text-center">
@@ -29,10 +29,10 @@
                     </div>
                     <div class="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-700 rounded-2xl p-4 text-center">
                         @if($hasWeightData)
-                            <p class="text-2xl font-bold text-orange-500">{{ number_format($weeklyCalories) }}</p>
+                            <p class="text-2xl font-bold text-accent-500">{{ number_format($weeklyCalories) }}</p>
                             <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">kcal diese Woche</p>
                         @else
-                            <a href="{{ route('settings.edit') }}" class="text-sm font-medium text-orange-500 hover:underline leading-tight block mt-1">Gewicht eintragen</a>
+                            <a href="{{ route('settings.edit') }}" class="text-sm font-medium text-accent-500 hover:underline leading-tight block mt-1">Gewicht eintragen</a>
                             <p class="text-zinc-500 dark:text-zinc-400 text-xs mt-1">für kcal-Berechnung</p>
                         @endif
                     </div>
@@ -137,7 +137,8 @@
     @if($sessions->isNotEmpty())
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        const isDark = document.documentElement.classList.contains('dark');
+        const isDark    = document.documentElement.classList.contains('dark');
+        const accentRgb = getComputedStyle(document.documentElement).getPropertyValue('--accent-500').trim().replace(/ /g, ',');
         Chart.defaults.color       = isDark ? '#71717a' : '#52525b';
         Chart.defaults.borderColor = isDark ? '#27272a' : '#e4e4e7';
 
@@ -148,7 +149,7 @@
                 datasets: [{
                     label: 'Minuten',
                     data:  @json($weeks->pluck('minutes')),
-                    backgroundColor: 'rgba(249,115,22,0.7)',
+                    backgroundColor: \`rgba(\${accentRgb},0.7)\`,
                     borderColor:     'rgba(249,115,22,1)',
                     borderWidth: 2,
                     borderRadius: 6,

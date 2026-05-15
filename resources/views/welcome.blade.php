@@ -5,13 +5,13 @@
 
         {{-- Background gradient --}}
         <div class="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950"></div>
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {{-- Content --}}
         <div class="relative z-10 text-center max-w-2xl mx-auto">
 
             {{-- Logo Icon --}}
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-500 rounded-2xl mb-8 shadow-lg shadow-orange-500/30">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-accent-500 rounded-2xl mb-8 shadow-lg shadow-accent-500/30">
                 <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -19,7 +19,7 @@
             </div>
 
             <h1 class="text-5xl sm:text-6xl font-bold tracking-tight mb-4">
-                Gym<span class="text-orange-500">Mate</span>
+                Gym<span class="text-accent-500">Mate</span>
             </h1>
 
             <p class="text-zinc-400 text-lg sm:text-xl mb-10 leading-relaxed">
@@ -29,7 +29,7 @@
 
             @auth
                 <a href="{{ route('dashboard') }}"
-                    class="inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-orange-500/25">
+                    class="inline-flex items-center gap-2 px-8 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-accent-500/25">
                     Zum Dashboard
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -38,7 +38,7 @@
             @else
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a href="{{ route('login') }}"
-                        class="inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-orange-500/25">
+                        class="inline-flex items-center gap-2 px-8 py-3.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-accent-500/25">
                         Einloggen
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>

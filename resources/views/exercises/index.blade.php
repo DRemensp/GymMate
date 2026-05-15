@@ -19,8 +19,8 @@
 
                 <button @click="editMode = !editMode"
                     :class="editMode
-                        ? 'bg-orange-500 text-white border-orange-500'
-                        : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-orange-500 hover:text-orange-500'"
+                        ? 'bg-accent-500 text-white border-accent-500'
+                        : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-accent-500 hover:text-accent-500'"
                     class="flex items-center gap-2 px-3.5 py-2 rounded-xl border text-sm font-medium transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -36,7 +36,7 @@
 
                 @foreach($exercises as $exercise)
                     <div x-data="{ open: false, confirmation: '' }"
-                         class="group relative rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-orange-500 transition-colors min-h-48">
+                         class="group relative rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-accent-500 transition-colors min-h-48">
 
                         <a href="{{ route('exercises.show', $exercise) }}" class="absolute inset-0"
                            :class="editMode ? 'pointer-events-none' : ''">
@@ -62,7 +62,7 @@
                         {{-- Edit/Delete buttons — nur im Bearbeitungsmodus sichtbar --}}
                         <div x-show="editMode" x-transition class="absolute top-2 right-2 flex gap-1 z-10">
                             <button @click.prevent="$dispatch('edit-exercise', { id: {{ $exercise->id }} })"
-                                class="p-1.5 rounded-lg text-white/70 hover:text-orange-400 hover:bg-orange-500/20 bg-black/30 transition-colors">
+                                class="p-1.5 rounded-lg text-white/70 hover:text-accent-400 hover:bg-accent-500/20 bg-black/30 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>

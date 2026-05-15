@@ -40,15 +40,15 @@
 
                         <input wire:model="sets.{{ $i }}.weight"
                             type="number" inputmode="decimal" step="0.01" min="0" placeholder="0"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
 
                         <input wire:model="sets.{{ $i }}.reps_left"
                             type="number" inputmode="numeric" min="1" placeholder="L"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
 
                         <input wire:model="sets.{{ $i }}.reps_right"
                             type="number" inputmode="numeric" min="1" placeholder="R"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
 
                         <button type="button" wire:click="removeSet({{ $i }})"
                             class="text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors disabled:opacity-30"
@@ -64,11 +64,11 @@
 
                         <input wire:model="sets.{{ $i }}.weight"
                             type="number" inputmode="decimal" step="0.01" min="0" placeholder="0"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
 
                         <input wire:model="sets.{{ $i }}.reps"
                             type="number" inputmode="numeric" min="1" placeholder="0"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
 
                         <button type="button" wire:click="removeSet({{ $i }})"
                             class="text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors disabled:opacity-30"
@@ -90,7 +90,7 @@
 
             {{-- Set hinzufügen --}}
             <button type="button" wire:click="addSet"
-                class="w-full py-2 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-orange-500 text-zinc-500 hover:text-orange-500 text-sm transition-colors mb-4 flex items-center justify-center gap-1">
+                class="w-full py-2 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-accent-500 text-zinc-500 hover:text-accent-500 text-sm transition-colors mb-4 flex items-center justify-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>
@@ -99,13 +99,13 @@
 
             {{-- Gewichts-Empfehlung --}}
             @if($progressionTip === 'increase')
-                <div class="flex items-center gap-2 px-3 py-2.5 mb-4 rounded-xl bg-orange-500/10 border border-orange-500/20">
+                <div class="flex items-center gap-2 px-3 py-2.5 mb-4 rounded-xl bg-accent-500/10 border border-accent-500/20">
                     @if($recommendedWeight !== null)
-                        <span class="text-orange-500 text-sm font-semibold">↑ {{ $recommendedWeight }}kg</span>
-                        <span class="text-orange-400/80 text-xs">— du hast alle Ziel-Reps erreicht, probiere dieses Gewicht</span>
+                        <span class="text-accent-500 text-sm font-semibold">↑ {{ $recommendedWeight }}kg</span>
+                        <span class="text-accent-400/80 text-xs">— du hast alle Ziel-Reps erreicht, probiere dieses Gewicht</span>
                     @else
-                        <span class="text-orange-500 text-sm font-semibold">↑ Erhöhe das Gewicht</span>
-                        <span class="text-orange-400/80 text-xs">— du hast alle Ziel-Reps erreicht</span>
+                        <span class="text-accent-500 text-sm font-semibold">↑ Erhöhe das Gewicht</span>
+                        <span class="text-accent-400/80 text-xs">— du hast alle Ziel-Reps erreicht</span>
                     @endif
                 </div>
             @elseif($progressionTip === 'hold')
@@ -119,7 +119,7 @@
                 <label class="block text-xs text-zinc-500 dark:text-zinc-400 mb-1">Datum</label>
                 <input wire:model="loggedAt" type="date"
                     max="{{ date('Y-m-d') }}"
-                    class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-orange-500 transition-colors mb-3"/>
+                    class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-accent-500 transition-colors mb-3"/>
                 @error('loggedAt') <p class="text-red-400 text-xs mb-2">{{ $message }}</p> @enderror
             </div>
 
@@ -136,7 +136,7 @@
                         $wire.save();
                     }
                 })"
-                class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
+                class="w-full py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors">
                 Speichern
             </button>
         </form>

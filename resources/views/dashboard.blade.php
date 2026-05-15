@@ -8,8 +8,8 @@
                 <span class="text-[19px] font-semibold text-zinc-900 dark:text-white tracking-tight">Standorte</span>
                 <button @click="editMode = !editMode"
                     :class="editMode
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-orange-500 dark:hover:text-orange-400'"
+                        ? 'bg-accent-500 text-white'
+                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-accent-500 dark:hover:text-accent-400'"
                     class="w-[38px] h-[38px] rounded-xl flex items-center justify-center transition-colors flex-shrink-0">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
@@ -34,7 +34,7 @@
             @if($todaySchedule && !$todaySchedule->is_rest && $todaySchedule->exercises->isNotEmpty())
             <div class="sm:pl-14 mb-5">
                 <div class="flex items-center gap-3 bg-white dark:bg-zinc-900 rounded-[18px] px-4 py-3.5 border border-zinc-200 dark:border-zinc-800">
-                    <div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white flex-shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-accent-500 flex items-center justify-center text-white flex-shrink-0">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="5" width="18" height="16" rx="2.5"/>
                             <path d="M3 10h18M8 3v4M16 3v4"/>
@@ -67,7 +67,7 @@
                     <div x-show="editMode" x-transition
                          class="absolute top-3 right-3 flex gap-1 z-10">
                         <button @click.prevent="$dispatch('edit-location', { id: {{ $location->id }} })"
-                            class="p-1.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-orange-500 hover:bg-orange-500/10 bg-zinc-100 dark:bg-zinc-800 transition-colors">
+                            class="p-1.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-accent-500 hover:bg-accent-500/10 bg-zinc-100 dark:bg-zinc-800 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
@@ -111,11 +111,11 @@
                                 @php $day = $dayIdx + 1; $isToday = $day === $todayDay; $isFuture = $day > $todayDay; @endphp
                                 <span class="w-[7px] h-[7px] rounded-full transition-colors
                                     @if($trained) bg-green-400
-                                    @elseif($isToday) bg-orange-400/60
+                                    @elseif($isToday) bg-accent-400/60
                                     @elseif($isFuture) bg-zinc-200 dark:bg-zinc-800
                                     @else bg-zinc-200 dark:bg-zinc-700
                                     @endif"
-                                    @if($isToday && !$trained) style="box-shadow: 0 0 0 1.5px #f97316, 0 0 0 3px rgba(249,115,22,0.15)"
+                                    @if($isToday && !$trained) style="box-shadow: 0 0 0 1.5px var(--accent-hex), 0 0 0 3px color-mix(in srgb, var(--accent-hex) 15%, transparent)"
                                     @elseif($trained) style="box-shadow: 0 0 5px 1px rgba(74,222,128,0.5)"
                                     @endif>
                                 </span>

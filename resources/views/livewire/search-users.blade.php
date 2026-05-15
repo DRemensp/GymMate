@@ -11,7 +11,7 @@
             placeholder="Benutzername suchen…"
             autofocus
             autocomplete="off"
-            class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-10 pr-4 py-3 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-orange-500 transition-colors"/>
+            class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-10 pr-4 py-3 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-accent-500 transition-colors"/>
     </div>
 
     {{-- Suchergebnisse --}}
@@ -23,7 +23,7 @@
         @foreach($results as $result)
         @php $isFollowing = $followingIds->contains($result->id); @endphp
         <div class="flex items-center gap-3 px-4 py-3.5 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
-            <a href="{{ route('profile.public', $result->name) }}" class="w-10 h-10 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
+            <a href="{{ route('profile.public', $result->name) }}" class="w-10 h-10 rounded-full overflow-hidden bg-accent-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
                 @if($result->avatarUrl())
                     <img src="{{ $result->avatarUrl() }}" alt="" class="w-full h-full object-cover">
                 @else
@@ -43,7 +43,7 @@
             </button>
             @else
             <button wire:click="follow({{ $result->id }})"
-                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors">
+                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-accent-500 hover:bg-accent-600 text-white rounded-xl transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>

@@ -28,19 +28,19 @@
                     @php $selectedIds = $entry->exercises->pluck('id'); @endphp
                     <div
                         x-data="{ rest: {{ $entry->is_rest ? 'true' : 'false' }} }"
-                        class="bg-white dark:bg-zinc-900 border {{ $dow === $today ? 'border-orange-500/50' : 'border-zinc-300 dark:border-zinc-700' }} rounded-2xl px-4 py-3">
+                        class="bg-white dark:bg-zinc-900 border {{ $dow === $today ? 'border-accent-500/50' : 'border-zinc-300 dark:border-zinc-700' }} rounded-2xl px-4 py-3">
 
                         <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold {{ $dow === $today ? 'text-orange-400' : 'text-zinc-600 dark:text-zinc-400' }}">
+                            <span class="text-sm font-semibold {{ $dow === $today ? 'text-accent-400' : 'text-zinc-600 dark:text-zinc-400' }}">
                                 {{ $dayNames[$dow] }}
                                 @if($dow === $today)
-                                    <span class="ml-1.5 text-xs text-orange-500/60 font-normal">heute</span>
+                                    <span class="ml-1.5 text-xs text-accent-500/60 font-normal">heute</span>
                                 @endif
                             </span>
                             <label class="flex items-center gap-1.5 cursor-pointer select-none">
                                 <input type="checkbox" name="days[{{ $dow }}][is_rest]" value="1"
                                     x-model="rest"
-                                    class="w-4 h-4 rounded border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-orange-500 focus:ring-0 focus:ring-offset-0">
+                                    class="w-4 h-4 rounded border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-accent-500 focus:ring-0 focus:ring-offset-0">
                                 <span class="text-zinc-500 text-xs">Rest Day</span>
                             </label>
                         </div>
@@ -72,9 +72,9 @@
                                                             {{ $selectedIds->contains($exercise->id) ? 'checked' : '' }}
                                                             class="sr-only peer">
                                                         <span class="px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors select-none
-                                                            peer-checked:bg-orange-500 peer-checked:border-orange-500 peer-checked:text-white
+                                                            peer-checked:bg-accent-500 peer-checked:border-accent-500 peer-checked:text-white
                                                             bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400
-                                                            hover:border-orange-400 hover:text-orange-500 dark:hover:border-orange-500 dark:hover:text-orange-400">
+                                                            hover:border-accent-400 hover:text-accent-500 dark:hover:border-accent-500 dark:hover:text-accent-400">
                                                             {{ $exercise->name }}
                                                         </span>
                                                     </label>
@@ -105,7 +105,7 @@
                                 name="target_reps"
                                 value="{{ Auth::user()->target_reps }}"
                                 min="1" max="100"
-                                class="w-16 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-1.5 text-zinc-900 dark:text-white text-sm text-center focus:outline-none focus:border-orange-500 transition-colors"/>
+                                class="w-16 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-1.5 text-zinc-900 dark:text-white text-sm text-center focus:outline-none focus:border-accent-500 transition-colors"/>
                         </div>
                     </div>
 
@@ -129,7 +129,7 @@
                                 $el.closest('form').submit();
                             }
                         })"
-                        class="w-full py-2.5 mt-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
+                        class="w-full py-2.5 mt-2 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors">
                         Speichern
                     </button>
                 </form>

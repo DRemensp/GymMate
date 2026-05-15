@@ -18,15 +18,37 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet"/>
 
-        {{-- Theme init before render to prevent flash --}}
+        {{-- Theme + accent init before render to prevent flash --}}
         <script>
             (function() {
-                const saved = localStorage.getItem('gymmate-theme');
-                if (saved === 'light') {
-                    document.documentElement.classList.remove('dark');
-                } else {
-                    document.documentElement.classList.add('dark');
-                }
+                // Theme
+                const savedTheme = localStorage.getItem('gymmate-theme');
+                if (savedTheme === 'light') document.documentElement.classList.remove('dark');
+                else document.documentElement.classList.add('dark');
+
+                // Accent color
+                var accents = {
+                    orange: ['255 237 213','251 146 60','249 115 22','234 88 12','#f97316'],
+                    blue:   ['219 234 254','96 165 250','59 130 246','37 99 235','#3b82f6'],
+                    violet: ['237 233 254','167 139 250','139 92 246','124 58 237','#8b5cf6'],
+                    green:  ['220 252 231','74 222 128','34 197 94','22 163 74','#22c55e'],
+                    red:    ['254 226 226','248 113 113','239 68 68','220 38 38','#ef4444'],
+                    pink:   ['252 231 243','244 114 182','236 72 153','219 39 119','#ec4899'],
+                };
+                window.__accentColors = accents;
+                window.__applyAccent = function(name) {
+                    var c = accents[name]; if (!c) return;
+                    var r = document.documentElement;
+                    r.style.setProperty('--accent-100', c[0]);
+                    r.style.setProperty('--accent-400', c[1]);
+                    r.style.setProperty('--accent-500', c[2]);
+                    r.style.setProperty('--accent-600', c[3]);
+                    r.style.setProperty('--accent-hex', c[4]);
+                    window.__accentHex  = c[4];
+                    window.__accentName = name;
+                    localStorage.setItem('gymmate-accent', name);
+                };
+                window.__applyAccent(localStorage.getItem('gymmate-accent') || 'orange');
             })();
         </script>
 
@@ -36,7 +58,7 @@
     <body class="font-sans antialiased bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white min-h-screen">
 
         <div class="fixed inset-0 bg-gradient-to-br from-zinc-50 via-white to-zinc-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 -z-10"></div>
-        <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-500/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
         <x-sidebar-nav />
 
@@ -81,7 +103,7 @@
             <div
                 x-show="!online"
                 x-transition
-                class="fixed top-0 left-0 right-0 z-[100] bg-orange-500 text-white text-center text-xs py-2 px-4 font-medium"
+                class="fixed top-0 left-0 right-0 z-[100] bg-accent-500 text-white text-center text-xs py-2 px-4 font-medium"
                 style="display:none"
             >
                 Offline – Änderungen werden lokal gespeichert und automatisch synchronisiert
@@ -91,7 +113,7 @@
             <div
                 x-show="pendingCount > 0"
                 x-transition
-                class="fixed top-3 right-3 z-[99] bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-lg"
+                class="fixed top-3 right-3 z-[99] bg-accent-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-lg"
                 style="display:none"
                 x-text="pendingCount + ' ausstehend'"
             ></div>
@@ -108,7 +130,7 @@
                         x-transition:leave-end="opacity-0"
                         :class="{
                             'bg-green-600': toast.type === 'success',
-                            'bg-orange-500': toast.type === 'offline',
+                            'bg-accent-500': toast.type === 'offline',
                             'bg-yellow-500': toast.type === 'conflict'
                         }"
                         class="text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-xl text-center pointer-events-auto"

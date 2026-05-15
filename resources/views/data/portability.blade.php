@@ -9,8 +9,8 @@
         {{-- Workouts ──────────────────────────────────────────────────── --}}
         <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 p-6 space-y-5">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-orange-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-9 h-9 bg-accent-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
                     </svg>
@@ -28,7 +28,7 @@
                     <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">gymmate_workouts.csv herunterladen</p>
                 </div>
                 <a href="{{ route('data.export.workouts') }}"
-                    class="px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors flex items-center gap-1.5">
+                    class="px-4 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold transition-colors flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
@@ -60,7 +60,7 @@
                 <form method="POST" action="{{ route('data.import.workouts') }}" enctype="multipart/form-data" class="flex items-center gap-3">
                     @csrf
                     <label class="flex-1 cursor-pointer">
-                        <div class="border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg px-3 py-2.5 text-sm text-zinc-500 dark:text-zinc-400 hover:border-orange-400 hover:text-orange-500 transition-colors text-center">
+                        <div class="border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg px-3 py-2.5 text-sm text-zinc-500 dark:text-zinc-400 hover:border-accent-400 hover:text-accent-500 transition-colors text-center">
                             <span x-data x-ref="label">CSV-Datei wählen</span>
                         </div>
                         <input type="file" name="file" accept=".csv,.txt" class="hidden"

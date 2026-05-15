@@ -13,7 +13,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between px-6 py-5 border-b border-zinc-200 dark:border-zinc-700">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+            <div class="w-8 h-8 bg-accent-500 rounded-lg flex items-center justify-center">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -79,11 +79,11 @@
     </nav>
 
     {{-- Footer --}}
-    <div class="px-4 py-5 border-t border-zinc-200 dark:border-zinc-700">
+    <div class="px-4 py-5 border-t border-zinc-200 dark:border-zinc-700" x-data="{ settingsOpen: false }">
         @auth
         <a href="{{ route('profile.public', Auth::user()->name) }}"
-            class="flex items-center gap-3 px-3 py-2 mb-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors group {{ request()->routeIs('profile.public') ? 'bg-zinc-100 dark:bg-zinc-800' : '' }}">
-            <div class="w-8 h-8 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
+            class="flex items-center gap-3 px-3 py-2 mb-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors group {{ request()->routeIs('profile.public') ? 'bg-zinc-100 dark:bg-zinc-800' : '' }}">
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-accent-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
                 @if(Auth::user()->avatarUrl())
                     <img src="{{ Auth::user()->avatarUrl() }}" alt="" class="w-full h-full object-cover">
                 @else
@@ -99,42 +99,16 @@
             </svg>
         </a>
 
-        {{-- Theme Toggle --}}
-        <div class="flex items-center gap-2 px-3 py-2 mb-1">
-            <span class="text-xs text-zinc-400 dark:text-zinc-500">Hell</span>
-            <button id="theme-toggle" onclick="toggleTheme()"
-                class="relative w-11 h-6 rounded-full transition-colors duration-300 bg-zinc-200 dark:bg-orange-500 focus:outline-none"
-                aria-label="Theme umschalten">
-                <span id="theme-knob"
-                    class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 dark:translate-x-5">
-                </span>
-            </button>
-            <span class="text-xs text-zinc-400 dark:text-zinc-500">Dunkel</span>
-        </div>
-
-        {{-- Offline cachen --}}
-        @auth
-        <button type="button" id="prefetch-btn" onclick="prefetchAll()"
+        {{-- Settings Button --}}
+        <button type="button" @click="settingsOpen = true"
             class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors text-left">
-            <svg id="prefetch-icon" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
-            <span id="prefetch-label">Offline vorbereiten</span>
+            Einstellungen
         </button>
-        @endauth
-
-        <form method="POST" action="{{ route('tour.reset') }}">
-            @csrf
-            <button type="submit"
-                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors text-left">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
-                </svg>
-                Tour wiederholen
-            </button>
-        </form>
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
@@ -147,6 +121,107 @@
                 Abmelden
             </button>
         </form>
+
+        {{-- Settings Modal --}}
+        <div
+            x-show="settingsOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-[200] flex items-center justify-center p-4"
+            style="display:none"
+        >
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="settingsOpen = false"></div>
+            <div
+                x-show="settingsOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 border border-zinc-300 dark:border-zinc-700"
+            >
+                {{-- Header --}}
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Einstellungen</h2>
+                    <button @click="settingsOpen = false" class="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{-- Accent Color --}}
+                <div class="mb-6">
+                    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">Akzentfarbe</p>
+                    <div class="grid grid-cols-6 gap-2">
+                        @foreach([
+                            ['name' => 'orange', 'hex' => '#f97316'],
+                            ['name' => 'blue',   'hex' => '#3b82f6'],
+                            ['name' => 'violet', 'hex' => '#8b5cf6'],
+                            ['name' => 'green',  'hex' => '#22c55e'],
+                            ['name' => 'red',    'hex' => '#ef4444'],
+                            ['name' => 'pink',   'hex' => '#ec4899'],
+                        ] as $color)
+                        <button type="button"
+                            onclick="window.__applyAccent('{{ $color['name'] }}')"
+                            class="w-full aspect-square rounded-full border-2 border-transparent hover:scale-110 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-zinc-900"
+                            style="background-color: {{ $color['hex'] }}; --tw-ring-color: {{ $color['hex'] }}"
+                            title="{{ ucfirst($color['name']) }}">
+                        </button>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Theme --}}
+                <div class="mb-6">
+                    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">Design</p>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-zinc-500 dark:text-zinc-400">Hell</span>
+                        <button onclick="toggleTheme()"
+                            class="relative w-11 h-6 rounded-full transition-colors duration-300 bg-zinc-200 dark:bg-accent-500 focus:outline-none"
+                            aria-label="Theme umschalten">
+                            <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 dark:translate-x-5"></span>
+                        </button>
+                        <span class="text-sm text-zinc-500 dark:text-zinc-400">Dunkel</span>
+                    </div>
+                </div>
+
+                {{-- Offline --}}
+                <div class="mb-6">
+                    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Offline</p>
+                    <button type="button" id="prefetch-btn" onclick="prefetchAll()"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors text-left">
+                        <svg id="prefetch-icon" class="w-5 h-5 shrink-0 text-zinc-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                        </svg>
+                        <span id="prefetch-label" class="text-sm text-zinc-700 dark:text-zinc-300">Offline vorbereiten</span>
+                    </button>
+                </div>
+
+                {{-- Tour --}}
+                <div>
+                    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Tour</p>
+                    <form method="POST" action="{{ route('tour.reset') }}">
+                        @csrf
+                        <button type="submit"
+                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors text-left">
+                            <svg class="w-5 h-5 shrink-0 text-zinc-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+                            </svg>
+                            <span class="text-sm text-zinc-700 dark:text-zinc-300">Tour wiederholen</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         @else
         <a href="{{ route('login') }}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-colors">

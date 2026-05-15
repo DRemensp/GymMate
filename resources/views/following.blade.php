@@ -20,7 +20,7 @@
                     </div>
                     @foreach($following as $followed)
                     <div class="flex items-center gap-3 px-4 py-3.5 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
-                        <a href="{{ route('profile.public', $followed->name) }}" class="w-10 h-10 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                        <a href="{{ route('profile.public', $followed->name) }}" class="w-10 h-10 rounded-full overflow-hidden bg-accent-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
                             @if($followed->avatarUrl())
                                 <img src="{{ $followed->avatarUrl() }}" alt="" class="w-full h-full object-cover">
                             @else

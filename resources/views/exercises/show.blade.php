@@ -57,7 +57,7 @@
                                             {{ $dayBreak ? 'border-t-2 border-zinc-300 dark:border-zinc-600' : ($setBreak ? 'border-t border-zinc-100 dark:border-zinc-800' : '') }}">
                                         <td class="px-4 py-2 text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
                                             @if($loop->first)
-                                                <span class="font-medium group-hover:text-orange-500 transition-colors">
+                                                <span class="font-medium group-hover:text-accent-500 transition-colors">
                                                     {{ $session->logged_at->format('d.m.Y') }}
                                                 </span>
                                             @endif
@@ -194,7 +194,7 @@
                 <template x-for="s in [90, 120, 180]">
                     <button
                         @click="preset(s)"
-                        :class="duration === s ? 'bg-orange-500 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'"
+                        :class="duration === s ? 'bg-accent-500 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'"
                         class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors"
                         x-text="s + 's'">
                     </button>
@@ -205,7 +205,7 @@
             <div class="flex gap-2">
                 <button
                     @click="running ? stop() : start()"
-                    :class="running ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200' : 'bg-orange-500 hover:bg-orange-600 text-white'"
+                    :class="running ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200' : 'bg-accent-500 hover:bg-accent-600 text-white'"
                     class="flex-1 py-2 rounded-xl text-sm font-semibold transition-colors"
                     x-text="running ? 'Pause' : (remaining < duration && remaining > 0 ? 'Weiter' : 'Start')">
                 </button>
@@ -223,8 +223,8 @@
         {{-- FAB Button --}}
         <button
             @click="open = !open"
-            :class="running ? 'ring-4 ring-orange-500/40' : ''"
-            class="w-14 h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all"
+            :class="running ? 'ring-4 ring-accent-500/40' : ''"
+            class="w-14 h-14 bg-accent-500 hover:bg-accent-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all"
         >
             <span x-show="!running || open" class="pointer-events-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

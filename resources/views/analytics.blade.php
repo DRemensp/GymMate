@@ -17,7 +17,7 @@
                     <a href="{{ route('analytics', ['location' => $loc->id]) }}"
                        class="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                               {{ $active?->id === $loc->id
-                                 ? 'bg-orange-500 text-white'
+                                 ? 'bg-accent-500 text-white'
                                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700' }}">
                         {{ $loc->name }}
                     </a>
@@ -50,7 +50,7 @@
                     </div>
                     <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-5">
                         Du performst am besten:
-                        <span class="text-orange-500 font-semibold">{{ $primeTime['best'] }}</span>
+                        <span class="text-accent-500 font-semibold">{{ $primeTime['best'] }}</span>
                         <span class="text-zinc-400">({{ $primeTime['best_range'] }})</span>
                         @if($primeTime['best_delta'] > 0)
                             <span class="text-green-500 font-medium">+{{ $primeTime['best_delta'] }}%</span>
@@ -64,12 +64,12 @@
                         @foreach($primeTime['buckets'] as $name => $stats)
                         <div class="flex items-center gap-3">
                             <span class="w-24 text-xs font-medium shrink-0
-                                {{ $name === $primeTime['best'] ? 'text-orange-500' : 'text-zinc-500 dark:text-zinc-400' }}">
+                                {{ $name === $primeTime['best'] ? 'text-accent-500' : 'text-zinc-500 dark:text-zinc-400' }}">
                                 {{ $name }}
                             </span>
                             <div class="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                                 <div class="h-full rounded-full transition-all
-                                    {{ $name === $primeTime['best'] ? 'bg-orange-500' : 'bg-zinc-300 dark:bg-zinc-600' }}"
+                                    {{ $name === $primeTime['best'] ? 'bg-accent-500' : 'bg-zinc-300 dark:bg-zinc-600' }}"
                                     style="width: {{ $stats['bar_pct'] }}%"></div>
                             </div>
                             <span class="w-14 text-right text-xs shrink-0
@@ -119,7 +119,7 @@
                                 <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
                                     <td class="px-6 py-3 text-zinc-900 dark:text-white font-medium">{{ $stat['name'] }}</td>
                                     <td class="px-4 py-3 text-right text-zinc-600 dark:text-zinc-300">{{ $stat['max_weight'] }} <span class="text-zinc-400 dark:text-zinc-600">kg</span></td>
-                                    <td class="px-4 py-3 text-right text-orange-500 font-semibold">{{ $stat['best_1rm'] }} <span class="text-zinc-400 dark:text-zinc-600 font-normal">kg</span></td>
+                                    <td class="px-4 py-3 text-right text-accent-500 font-semibold">{{ $stat['best_1rm'] }} <span class="text-zinc-400 dark:text-zinc-600 font-normal">kg</span></td>
                                     <td class="px-4 py-3 text-right text-zinc-600 dark:text-zinc-300">{{ $stat['sessions'] }}</td>
                                     <td class="px-4 py-3 text-right text-zinc-600 dark:text-zinc-300">{{ number_format($stat['total_volume']) }} <span class="text-zinc-400 dark:text-zinc-600">kg</span></td>
                                     <td class="px-4 py-3 text-right text-zinc-500">{{ $stat['last_trained'] }}</td>
@@ -153,10 +153,10 @@
                                                 labels: Array.from({length: this.volumeData.length}, (_, i) => i + 1),
                                                 datasets: [{
                                                     data: this.volumeData.slice(),
-                                                    borderColor: '#f97316',
+                                                    borderColor: accentHex,
                                                     borderWidth: 2.5,
                                                     pointRadius: 3,
-                                                    pointBackgroundColor: '#f97316',
+                                                    pointBackgroundColor: accentHex,
                                                     tension: 0.4,
                                                     fill: false,
                                                 }]
@@ -206,7 +206,7 @@
                                     </div>
                                     <div class="text-center">
                                         <p class="text-zinc-500 text-xs">1RM</p>
-                                        <p class="text-orange-500 font-semibold text-sm">{{ $stat['best_1rm'] }}<span class="text-zinc-400 text-xs font-normal">kg</span></p>
+                                        <p class="text-accent-500 font-semibold text-sm">{{ $stat['best_1rm'] }}<span class="text-zinc-400 text-xs font-normal">kg</span></p>
                                     </div>
                                     <div class="text-center">
                                         <p class="text-zinc-500 text-xs">Sets</p>
@@ -249,9 +249,9 @@
                                             <p class="text-zinc-500 text-xs mb-1">Max Weight</p>
                                             <p class="text-zinc-900 dark:text-white font-bold text-lg">{{ $stat['max_weight'] }}<span class="text-zinc-400 text-xs font-normal ml-0.5">kg</span></p>
                                         </div>
-                                        <div class="bg-orange-500/10 rounded-2xl p-3 text-center">
-                                            <p class="text-orange-500/70 text-xs mb-1">Est. 1RM</p>
-                                            <p class="text-orange-500 font-bold text-lg">{{ $stat['best_1rm'] }}<span class="text-orange-400/60 text-xs font-normal ml-0.5">kg</span></p>
+                                        <div class="bg-accent-500/10 rounded-2xl p-3 text-center">
+                                            <p class="text-accent-500/70 text-xs mb-1">Est. 1RM</p>
+                                            <p class="text-accent-500 font-bold text-lg">{{ $stat['best_1rm'] }}<span class="text-accent-400/60 text-xs font-normal ml-0.5">kg</span></p>
                                         </div>
                                         <div class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl p-3 text-center">
                                             <p class="text-zinc-500 text-xs mb-1">Sessions</p>
@@ -274,12 +274,12 @@
                                             <p class="text-zinc-500 text-xs" x-text="mode === 'volume' ? 'Volumen-Trend' : 'Gewicht-Trend'"></p>
                                             <div class="flex gap-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
                                                 <button @click="switchMode('volume')"
-                                                    :class="mode === 'volume' ? 'bg-orange-500 text-white' : 'text-zinc-500 dark:text-zinc-400'"
+                                                    :class="mode === 'volume' ? 'bg-accent-500 text-white' : 'text-zinc-500 dark:text-zinc-400'"
                                                     class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors">
                                                     Volumen
                                                 </button>
                                                 <button @click="switchMode('weight')"
-                                                    :class="mode === 'weight' ? 'bg-orange-500 text-white' : 'text-zinc-500 dark:text-zinc-400'"
+                                                    :class="mode === 'weight' ? 'bg-accent-500 text-white' : 'text-zinc-500 dark:text-zinc-400'"
                                                     class="px-2.5 py-1 text-xs font-semibold rounded-md transition-colors">
                                                     Gewicht
                                                 </button>
@@ -309,7 +309,9 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        const isDark = document.documentElement.classList.contains('dark');
+        const isDark    = document.documentElement.classList.contains('dark');
+        const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent-hex').trim();
+        const accentRgb = getComputedStyle(document.documentElement).getPropertyValue('--accent-500').trim().replace(/ /g, ',');
         Chart.defaults.color      = isDark ? '#71717a' : '#52525b';
         Chart.defaults.borderColor = isDark ? '#27272a' : '#e4e4e7';
 
@@ -319,8 +321,8 @@
                 labels: @json($weeklyLabels),
                 datasets: [{
                     data: @json($weeklyData),
-                    backgroundColor: 'rgba(249,115,22,0.7)',
-                    hoverBackgroundColor: 'rgba(249,115,22,1)',
+                    backgroundColor: `rgba(${accentRgb},0.7)`,
+                    hoverBackgroundColor: `rgba(${accentRgb},1)`,
                     borderRadius: 6,
                     borderSkipped: false,
                 }]
@@ -348,7 +350,7 @@
                     labels: values.map((_, i) => i),
                     datasets: [{
                         data: values,
-                        borderColor: '#f97316',
+                        borderColor: accentHex,
                         borderWidth: 2,
                         pointRadius: 0,
                         tension: 0.4,

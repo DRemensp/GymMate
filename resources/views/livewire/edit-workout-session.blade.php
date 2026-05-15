@@ -9,7 +9,7 @@
                 <div class="flex-1 min-w-0 pr-2">
                     <h2 class="text-lg font-semibold text-zinc-900 dark:text-white">Edit Session</h2>
                     <input wire:model="sessionDate" type="date" max="{{ date('Y-m-d') }}"
-                        class="mt-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-1 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-orange-500 transition-colors"/>
+                        class="mt-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-1 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-accent-500 transition-colors"/>
                     @error('sessionDate') <p class="text-red-500 text-xs mt-0.5">{{ $message }}</p> @enderror
                 </div>
                 <div class="flex items-center gap-2">
@@ -60,11 +60,11 @@
                     <div class="grid grid-cols-[1.5rem_1fr_1fr_1fr_1.5rem] gap-1.5 items-center min-w-0">
                         <span class="text-zinc-400 dark:text-zinc-500 text-sm text-center font-mono">{{ $i + 1 }}</span>
                         <input wire:model="sets.{{ $i }}.weight" type="number" inputmode="decimal" step="0.01" min="0"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
                         <input wire:model="sets.{{ $i }}.reps_left" type="number" inputmode="numeric" min="1" placeholder="L"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
                         <input wire:model="sets.{{ $i }}.reps_right" type="number" inputmode="numeric" min="1" placeholder="R"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
                         <button type="button" wire:click="removeSet({{ $i }})"
                             class="text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors"
                             @if(count($sets) === 1) disabled @endif>
@@ -77,9 +77,9 @@
                     <div class="grid grid-cols-[1.5rem_1fr_1fr_1.5rem] gap-1.5 items-center min-w-0">
                         <span class="text-zinc-400 dark:text-zinc-500 text-sm text-center font-mono">{{ $i + 1 }}</span>
                         <input wire:model="sets.{{ $i }}.weight" type="number" inputmode="decimal" step="0.01" min="0"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
                         <input wire:model="sets.{{ $i }}.reps" type="number" inputmode="numeric" min="1"
-                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-orange-500 transition-colors w-full min-w-0"/>
+                            class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg px-2 py-2 text-zinc-900 dark:text-white text-base focus:outline-none focus:border-accent-500 transition-colors w-full min-w-0"/>
                         <button type="button" wire:click="removeSet({{ $i }})"
                             class="text-zinc-400 dark:text-zinc-600 hover:text-red-400 transition-colors"
                             @if(count($sets) === 1) disabled @endif>
@@ -92,7 +92,7 @@
                 @endforeach
 
                 <button type="button" wire:click="addSet"
-                    class="w-full py-2 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-orange-500 text-zinc-500 hover:text-orange-500 text-sm transition-colors flex items-center justify-center gap-1">
+                    class="w-full py-2 rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-accent-500 text-zinc-500 hover:text-accent-500 text-sm transition-colors flex items-center justify-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
@@ -105,7 +105,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                        class="flex-1 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-colors">
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors">
                         Save
                     </button>
                 </div>
@@ -139,7 +139,7 @@
         <div class="relative w-8 h-8 flex-shrink-0">
             <svg class="w-8 h-8 -rotate-90" viewBox="0 0 32 32">
                 <circle cx="16" cy="16" r="13" fill="none" stroke="#e4e4e7" class="dark:stroke-zinc-700" stroke-width="3"/>
-                <circle cx="16" cy="16" r="13" fill="none" stroke="#f97316" stroke-width="3"
+                <circle cx="16" cy="16" r="13" fill="none" stroke="var(--accent-hex)" stroke-width="3"
                     stroke-dasharray="81.68"
                     :stroke-dashoffset="81.68 - (81.68 * seconds / 15)"
                     style="transition: stroke-dashoffset 1s linear"/>
@@ -150,7 +150,7 @@
         <span class="text-zinc-600 dark:text-zinc-300 text-sm">Session deleted</span>
 
         <button @click="undo()"
-            class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors">
+            class="px-3 py-1.5 rounded-lg bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold transition-colors">
             Undo
         </button>
     </div>

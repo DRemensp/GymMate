@@ -1,7 +1,7 @@
 <div>
     <button wire:click="$set('open', true)"
-        class="flex items-center justify-center w-full h-full min-h-48 rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-orange-500 hover:bg-orange-500/5 transition-colors group">
-        <svg class="w-10 h-10 text-zinc-400 dark:text-zinc-600 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        class="flex items-center justify-center w-full h-full min-h-48 rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-accent-500 hover:bg-accent-500/5 transition-colors group">
+        <svg class="w-10 h-10 text-zinc-400 dark:text-zinc-600 group-hover:text-accent-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.5v15m7.5-7.5h-15"/>
         </svg>
     </button>
@@ -17,14 +17,14 @@
                 <div>
                     <label class="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">Name</label>
                     <input wire:model="name" type="text" placeholder="z.B. Push / Pull / Legs"
-                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"/>
+                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-accent-500 transition-colors"/>
                     @error('name') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm text-zinc-500 dark:text-zinc-400 mb-1">Bild <span class="text-zinc-400 dark:text-zinc-600">(optional)</span></label>
                     <input wire:model="image" type="file" accept="image/*"
-                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-500 dark:text-zinc-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-orange-500 file:text-white file:text-sm cursor-pointer"/>
+                        class="w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-500 dark:text-zinc-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-accent-500 file:text-white file:text-sm cursor-pointer"/>
                     @error('image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
 
                     @if($image)
@@ -49,7 +49,7 @@
                                 $wire.save();
                             }
                         })"
-                        class="flex-1 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-colors">
+                        class="flex-1 px-4 py-2.5 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors">
                         Erstellen
                     </button>
                 </div>

@@ -22,7 +22,7 @@
             Workouts und Cardio die du offline geloggt hast werden automatisch synchronisiert.
         </p>
         <button onclick="window.history.back()"
-            class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors text-sm">
+            class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors text-sm">
             Zurück
         </button>
     </div>

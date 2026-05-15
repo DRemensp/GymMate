@@ -19,8 +19,8 @@
 
                 <button @click="editMode = !editMode"
                     :class="editMode
-                        ? 'bg-orange-500 text-white border-orange-500'
-                        : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-orange-500 hover:text-orange-500'"
+                        ? 'bg-accent-500 text-white border-accent-500'
+                        : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-accent-500 hover:text-accent-500'"
                     class="flex items-center gap-2 px-3.5 py-2 rounded-xl border text-sm font-medium transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -71,13 +71,13 @@
                     <button
                         @click="selected = {{ $dow }}"
                         :class="selected === {{ $dow }}
-                            ? '{{ $dow === $todayDow ? 'bg-orange-500 border-orange-500 text-white' : 'bg-zinc-800 dark:bg-white border-zinc-800 dark:border-white text-white dark:text-zinc-900' }}'
+                            ? '{{ $dow === $todayDow ? 'bg-accent-500 border-accent-500 text-white' : 'bg-zinc-800 dark:bg-white border-zinc-800 dark:border-white text-white dark:text-zinc-900' }}'
                             : '{{ $isFuture ? 'border-zinc-200 dark:border-zinc-800 text-zinc-400 dark:text-zinc-600' : 'border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400' }}'"
                         class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-2xl border transition-all">
                         <span class="text-[12px] font-semibold">{{ $dayShort[$dow] }}</span>
                         <span class="w-1.5 h-1.5 rounded-full
                             @if($d['allDone']) bg-green-400
-                            @elseif($d['anyDone']) bg-orange-400
+                            @elseif($d['anyDone']) bg-accent-400
                             @elseif($d['isRest'] || ($d['exList']->isNotEmpty() && !$isFuture)) bg-zinc-300 dark:bg-zinc-600
                             @else bg-transparent
                             @endif"
@@ -95,18 +95,18 @@
                     $isYester = $dow === $yesterdayDow;
                 @endphp
                 <div x-show="selected === {{ $dow }}" x-cloak
-                     class="mt-3 bg-white dark:bg-zinc-900 border rounded-2xl overflow-hidden {{ $isToday ? 'border-orange-500/30' : 'border-zinc-200 dark:border-zinc-800' }}">
+                     class="mt-3 bg-white dark:bg-zinc-900 border rounded-2xl overflow-hidden {{ $isToday ? 'border-accent-500/30' : 'border-zinc-200 dark:border-zinc-800' }}">
 
                     {{-- Header --}}
-                    <div class="flex items-center justify-between px-4 py-3 border-b {{ $isToday ? 'border-orange-500/15 bg-orange-500/5' : 'border-zinc-100 dark:border-zinc-800' }}">
+                    <div class="flex items-center justify-between px-4 py-3 border-b {{ $isToday ? 'border-accent-500/15 bg-accent-500/5' : 'border-zinc-100 dark:border-zinc-800' }}">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-semibold {{ $isToday ? 'text-orange-400' : 'text-zinc-700 dark:text-zinc-300' }}">
+                            <span class="text-sm font-semibold {{ $isToday ? 'text-accent-400' : 'text-zinc-700 dark:text-zinc-300' }}">
                                 {{ $dayFull[$dow] }}
                             </span>
                             @if($isToday)
-                                <span class="text-[10px] text-orange-400/70">heute</span>
+                                <span class="text-[10px] text-accent-400/70">heute</span>
                             @elseif($isYester)
-                                <span class="text-[10px] bg-orange-500/10 text-orange-500 font-semibold px-1.5 py-0.5 rounded-md">Nachholen</span>
+                                <span class="text-[10px] bg-accent-500/10 text-accent-500 font-semibold px-1.5 py-0.5 rounded-md">Nachholen</span>
                             @endif
                         </div>
                         @if($d['allDone'])
@@ -114,7 +114,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
                         @elseif($d['anyDone'])
-                            <span class="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0"></span>
+                            <span class="w-2 h-2 rounded-full bg-accent-400 flex-shrink-0"></span>
                         @endif
                     </div>
 
@@ -134,9 +134,9 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"/>
                                         </svg>
                                     @else
-                                        <span class="w-2 h-2 rounded-full flex-shrink-0 {{ $isToday ? 'bg-orange-400/70' : 'bg-zinc-300 dark:bg-zinc-600' }}"></span>
+                                        <span class="w-2 h-2 rounded-full flex-shrink-0 {{ $isToday ? 'bg-accent-400/70' : 'bg-zinc-300 dark:bg-zinc-600' }}"></span>
                                     @endif
-                                    <span class="text-sm font-medium transition-colors {{ $item['done'] ? 'line-through text-zinc-400 dark:text-zinc-600' : 'text-zinc-800 dark:text-zinc-200 group-hover:text-orange-500' }}">
+                                    <span class="text-sm font-medium transition-colors {{ $item['done'] ? 'line-through text-zinc-400 dark:text-zinc-600' : 'text-zinc-800 dark:text-zinc-200 group-hover:text-accent-500' }}">
                                         {{ $item['model']->name }}
                                     </span>
                                 </a>
@@ -156,7 +156,7 @@
 
                 @foreach($plans as $plan)
                     <div x-data="{ open: false, confirmation: '' }"
-                         class="group relative rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-orange-500 transition-colors min-h-48">
+                         class="group relative rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:border-accent-500 transition-colors min-h-48">
 
                         <a href="{{ route('training-plans.exercises.index', $plan) }}" class="absolute inset-0"
                            :class="editMode ? 'pointer-events-none' : ''">
@@ -181,7 +181,7 @@
 
                         <div x-show="editMode" x-transition class="absolute top-2 right-2 flex gap-1 z-10">
                             <button @click.prevent="$dispatch('edit-training-plan', { id: {{ $plan->id }} })"
-                                class="p-1.5 rounded-lg text-white/70 hover:text-orange-400 hover:bg-orange-500/20 bg-black/30 transition-colors">
+                                class="p-1.5 rounded-lg text-white/70 hover:text-accent-400 hover:bg-accent-500/20 bg-black/30 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>

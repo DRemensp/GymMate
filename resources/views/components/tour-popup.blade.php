@@ -17,7 +17,7 @@
         <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">{{ $slot }}</p>
         <button
             @click="fetch('/tour/{{ $step }}',{method:'POST',headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content,'Accept':'application/json'}}).then(()=>open=false)"
-            class="w-full mt-5 px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors">
+            class="w-full mt-5 px-5 py-3 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors">
             Verstanden
         </button>
         <button
