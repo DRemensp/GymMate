@@ -47,6 +47,8 @@
                     window.__accentHex  = c[4];
                     window.__accentName = name;
                     localStorage.setItem('gymmate-accent', name);
+                    var tm = document.querySelector('meta[name="theme-color"]');
+                    if (tm) tm.setAttribute('content', c[4]);
                 };
                 window.__applyAccent(localStorage.getItem('gymmate-accent') || 'orange');
             })();
