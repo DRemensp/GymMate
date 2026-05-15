@@ -1,6 +1,6 @@
 <x-layouts.sidebar>
 
-    <div class="min-h-screen px-6 pt-8 pb-10">
+    <div x-data class="min-h-screen px-6 pt-8 pb-10">
         <div class="max-w-xl mx-auto">
 
             <div class="mb-8 sm:pl-14">
