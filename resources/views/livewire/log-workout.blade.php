@@ -34,20 +34,6 @@
                 @endif
 
                 @foreach($sets as $i => $set)
-                    @if($lastSets && isset($lastSets[$i]))
-                        @php
-                            $lastWeight = $lastSets[$i]['weight'];
-                            $rec = $progressionTip === 'increase' ? round($lastWeight * 1.10, 2) : $lastWeight;
-                        @endphp
-                        <div class="pl-8 -mb-0.5 flex items-center gap-1.5">
-                            @if($progressionTip === 'increase')
-                                <span class="text-xs text-orange-500 font-medium">↑ +10% → {{ $rec }}kg</span>
-                            @else
-                                <span class="text-xs text-zinc-400 dark:text-zinc-500">= {{ $rec }}kg halten</span>
-                            @endif
-                        </div>
-                    @endif
-
                     @if($exercise->is_unilateral)
                     <div class="grid grid-cols-[1.5rem_1fr_1fr_1fr_1.5rem] gap-1.5 items-center min-w-0">
                         <span class="text-zinc-400 dark:text-zinc-500 text-sm text-center font-mono">{{ $i + 1 }}</span>
@@ -110,6 +96,24 @@
                 </svg>
                 Add Set
             </button>
+
+            {{-- Gewichts-Empfehlung --}}
+            @if($progressionTip === 'increase')
+                <div class="flex items-center gap-2 px-3 py-2.5 mb-4 rounded-xl bg-orange-500/10 border border-orange-500/20">
+                    @if($recommendedWeight !== null)
+                        <span class="text-orange-500 text-sm font-semibold">↑ {{ $recommendedWeight }}kg</span>
+                        <span class="text-orange-400/80 text-xs">— du hast alle Ziel-Reps erreicht, probiere dieses Gewicht</span>
+                    @else
+                        <span class="text-orange-500 text-sm font-semibold">↑ Erhöhe das Gewicht</span>
+                        <span class="text-orange-400/80 text-xs">— du hast alle Ziel-Reps erreicht</span>
+                    @endif
+                </div>
+            @elseif($progressionTip === 'hold')
+                <div class="flex items-center gap-2 px-3 py-2.5 mb-4 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                    <span class="text-zinc-600 dark:text-zinc-300 text-sm font-semibold">= {{ $recommendedWeight }}kg</span>
+                    <span class="text-zinc-400 dark:text-zinc-500 text-xs">— halte das Gewicht bis du die Ziel-Reps schaffst</span>
+                </div>
+            @endif
 
             <div>
                 <label class="block text-xs text-zinc-500 dark:text-zinc-400 mb-1">Datum</label>

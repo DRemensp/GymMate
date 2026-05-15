@@ -35,37 +35,62 @@ class LocationController extends Controller
         $locations = $user->locations()
             ->with(['media', 'trainingPlans.exercises'])
             ->orderBy('name')
-            ->get()
-            ->map(function ($location) use ($userId) {
-                $exerciseIds = $location->trainingPlans->flatMap->exercises->pluck('id');
+            ->get();
 
-                if ($exerciseIds->isEmpty()) {
-                    $location->sessionCount = 0;
-                    $location->lastVisit    = null;
-                    $location->monthDots    = array_fill(0, Carbon::now()->daysInMonth, false);
-                    return $location;
+        // Build exercise_id → location_id map from already-loaded relations (no extra queries)
+        $exerciseToLocation = [];
+        foreach ($locations as $location) {
+            foreach ($location->trainingPlans as $plan) {
+                foreach ($plan->exercises as $exercise) {
+                    $exerciseToLocation[$exercise->id] = $location->id;
+                }
+            }
+        }
+
+        $daysInMonth = Carbon::now()->daysInMonth;
+        $monthStart  = Carbon::now()->startOfMonth();
+        $monthEnd    = Carbon::now()->endOfDay();
+
+        foreach ($locations as $location) {
+            $location->sessionCount = 0;
+            $location->lastVisit    = null;
+            $location->monthDots    = array_fill(0, $daysInMonth, false);
+        }
+
+        if (!empty($exerciseToLocation)) {
+            // Single query replaces 3N queries
+            $allSessions = WorkoutSession::whereIn('exercise_id', array_keys($exerciseToLocation))
+                ->get(['exercise_id', 'logged_at']);
+
+            $countByLocation       = [];
+            $lastVisitByLocation   = [];
+            $trainedDaysByLocation = [];
+
+            foreach ($allSessions as $session) {
+                $locId    = $exerciseToLocation[$session->exercise_id];
+                $loggedAt = Carbon::parse($session->logged_at);
+
+                $countByLocation[$locId] = ($countByLocation[$locId] ?? 0) + 1;
+
+                if (!isset($lastVisitByLocation[$locId]) || $loggedAt > $lastVisitByLocation[$locId]) {
+                    $lastVisitByLocation[$locId] = $loggedAt;
                 }
 
-                $location->sessionCount = WorkoutSession::whereIn('exercise_id', $exerciseIds)->count();
+                if ($loggedAt->between($monthStart, $monthEnd)) {
+                    $trainedDaysByLocation[$locId][$loggedAt->day] = true;
+                }
+            }
 
-                $lastSession = WorkoutSession::whereIn('exercise_id', $exerciseIds)
-                    ->latest('logged_at')
-                    ->first();
-                $location->lastVisit = $lastSession?->logged_at;
-
-                $sessionsThisMonth = WorkoutSession::whereIn('exercise_id', $exerciseIds)
-                    ->whereBetween('logged_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfDay()])
-                    ->get(['logged_at']);
-
-                $trainedDays = $sessionsThisMonth
-                    ->map(fn($s) => Carbon::parse($s->logged_at)->day)
-                    ->flip()
-                    ->toArray();
-
-                $location->monthDots = array_map(fn($d) => isset($trainedDays[$d]), range(1, Carbon::now()->daysInMonth));
-
-                return $location;
-            });
+            $locationMap = $locations->keyBy('id');
+            foreach ($countByLocation as $locId => $count) {
+                $loc = $locationMap[$locId] ?? null;
+                if (!$loc) continue;
+                $loc->sessionCount = $count;
+                $loc->lastVisit    = $lastVisitByLocation[$locId] ?? null;
+                $days = $trainedDaysByLocation[$locId] ?? [];
+                $loc->monthDots = array_map(fn($d) => isset($days[$d]), range(1, $daysInMonth));
+            }
+        }
 
         return view('dashboard', compact(
             'locations', 'greeting', 'firstName',

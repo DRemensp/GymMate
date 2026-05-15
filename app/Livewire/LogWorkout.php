@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Exercise;
+use App\Models\ExerciseSet;
 use App\Models\WorkoutSession;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -15,9 +16,10 @@ class LogWorkout extends Component
         ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => ''],
     ];
 
-    public ?array $lastSets       = null;
+    public ?array $lastSets        = null;
     public ?string $progressionTip = null;
-    public string $loggedAt        = '';
+    public ?float $recommendedWeight = null;
+    public string $loggedAt          = '';
 
     public function mount(Exercise $exercise): void
     {
@@ -46,6 +48,25 @@ class LogWorkout extends Component
 
             $this->progressionTip = $allReached ? 'increase' : 'hold';
             $this->sets = array_fill(0, $lastSession->sets->count(), ['weight' => '', 'reps' => '', 'reps_left' => '', 'reps_right' => '']);
+
+            // All unique weights ever used for this exercise, sorted ascending
+            $usedWeights = ExerciseSet::whereHas('session', fn($q) => $q->where('exercise_id', $exercise->id))
+                ->pluck('weight')
+                ->filter(fn($w) => $w > 0)
+                ->map(fn($w) => (float) $w)
+                ->unique()
+                ->sort()
+                ->values();
+
+            $lastMax = (float) $lastSession->sets->max('weight');
+
+            if ($this->progressionTip === 'increase') {
+                // Next heavier weight actually used on this machine — no math, no made-up values
+                $next = $usedWeights->first(fn($w) => $w > $lastMax);
+                $this->recommendedWeight = $next; // null = no heavier weight in history yet
+            } else {
+                $this->recommendedWeight = $lastMax;
+            }
         }
     }
 
