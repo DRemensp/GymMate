@@ -14,12 +14,21 @@ use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TrainingPlanController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\WeeklyScheduleController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+Route::get('/', function (Request $request) {
+    // Mobile / tablet → normaler App-Flow
+    $ua = $request->header('User-Agent', '');
+    if (preg_match('/(Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini|Mobile)/i', $ua)) {
+        return auth()->check()
+            ? redirect()->route('dashboard')
+            : redirect()->route('login');
+    }
+
+    // Desktop → immer Phone-View, iframe zeigt die richtige Seite
+    $iframeSrc = auth()->check() ? route('dashboard') : route('login');
+    return view('desktop-phone', ['iframeSrc' => $iframeSrc]);
 });
 
 Route::get('/offline', fn() => view('offline'))->name('offline');
