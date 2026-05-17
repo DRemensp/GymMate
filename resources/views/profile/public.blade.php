@@ -126,7 +126,7 @@
                         'Nacht'      => '22–04 Uhr',
                     ];
                 @endphp
-                <div class="bg-accent-500/5 border border-accent-500/20 rounded-[18px] p-4 col-span-2">
+                <div class="bg-accent-500/5 border border-accent-500/20 rounded-[18px] p-4">
                     <div class="font-mono text-[10px] text-accent-400/70 uppercase tracking-[0.08em] mb-1">PrimeTime</div>
                     <div class="text-[18px] font-semibold text-accent-500 leading-tight">{{ $user->prime_time }}</div>
                     <div class="text-[11px] text-accent-400/60 mt-0.5">{{ $primeRanges[$user->prime_time] ?? '' }}</div>
