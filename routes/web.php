@@ -31,6 +31,10 @@ Route::get('/', function (Request $request) {
     return view('desktop-phone', ['iframeSrc' => $iframeSrc]);
 });
 
+Route::get('/tour', function () {
+    $iframeSrc = auth()->check() ? route('dashboard') : route('login');
+    return view('tour-page', compact('iframeSrc'));
+})->name('tour.page');
 Route::get('/offline', fn() => view('offline'))->name('offline');
 Route::get('/ping', fn() => response('', 204));
 
